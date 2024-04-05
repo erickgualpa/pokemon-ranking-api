@@ -1,4 +1,4 @@
-# 🦆 Pokemon Ranking API 🔝
+# 🦆 Pokémon Ranking API 🔝
 
 ![CI/CD status](https://github.com/erickgualpa/pokemon-ranking-api/actions/workflows/main.yml/badge.svg)
 
