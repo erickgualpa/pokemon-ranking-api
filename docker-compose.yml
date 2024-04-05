@@ -1,0 +1,12 @@
+services:
+  spring-boot-app:
+    build:
+      dockerfile: Dockerfile
+    image: pokemon-ranking-api:latest
+    ports:
+      - 8080:8080
+    networks:
+      - pokemon-ranking-service-network
+networks:
+  pokemon-ranking-service-network:
+    driver: bridge
