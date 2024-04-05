@@ -1,4 +1,4 @@
-# Pokemon Ranking API
+# 🦆 Pokemon Ranking API 🔝
 
 🚀 Build and deploy service as container! 🐳
 <br>
