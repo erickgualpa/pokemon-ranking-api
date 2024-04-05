@@ -1,5 +1,7 @@
 # 🦆 Pokemon Ranking API 🔝
 
+![CI/CD status](https://github.com/erickgualpa/pokemon-ranking-api/actions/workflows/main.yml/badge.svg)
+
 🚀 Build and deploy service as container! 🐳
 <br>
 
