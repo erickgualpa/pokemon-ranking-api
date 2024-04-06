@@ -20,7 +20,7 @@ Clarified that, I first decided what would be domain and what would be infrastru
 retrieve Pokémon rankings based on different criteria. I put the action of retrieve and limit the ranking in domain as
 it is something that could make sense to vary based on functional requirements. Construction of the ranking though has
 been considered infrastructure as it could come directly from the PokéAPI (not really) or have some preprocessing or
-even caching, without affecting the domain. I planned my steps in this way, and it could be seen
+even caching without affecting the domain. I planned my steps in this way, and it could be seen
 in [how I integrated my solutions into the main branch](https://github.com/erickgualpa/pokemon-ranking-api/pulls?q=),
 first trying to resolve the functional requirements and then giving a workaround to the performance issue on the PokéAPI
 requests.
@@ -30,9 +30,8 @@ requests.
 Infrastructure could be refactored and optimized.
 Domain is sufficiently well-defined to allow the addition of new rankings also giving freedom on the limit factor but
 infrastructure is
-tightly coupled to the PokéAPI. Considering that, the solution provided is just a first first approach to make it "
-production ready"
-but to be actually ready alternatives like caching should be considered. Even if caching could be a nightmare most of
+tightly coupled to the PokéAPI. Considering that, the solution provided is just a first first approach to make it "production ready"
+but to be actually ready alternatives like caching should be considered. Even whe caching could be a nightmare most of
 the time, the nature
 of the problem faced seems to be requesting it as the dependency with the PokéAPI is requiring HTTP requests each time a
 ranking is built.
@@ -56,7 +55,7 @@ On this scenario `pokemon-ranking-api` would be just a supplier of rankings base
 - Configure PokéAPI client bean from `PokemonRankingApiConfiguration` instead of building it in `HttpRankingRepository`.
 - Define and throw specific exceptions on sad paths.
 - Add integration tests covering sad paths from `HttpRankingRepository`.
-- Address non-deterministic rankings when there are several Pokémons matching the criteria.
+- Address non-deterministic rankings when there are several Pokémons with same criteria value.
 
 #### Time invested on solution ⏳
 - ~1h ➡️ Lecture of the problem and sketch of the diagram
