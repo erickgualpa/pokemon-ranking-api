@@ -57,7 +57,7 @@ public class HttpRankingRepository implements RankingRepository {
         getPokemonDetails().stream()
                 .filter(p -> p.weight() != null)
                 .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
-                .forEachOrdered(p -> ranking.addPokemon(p.name()));
+                .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;
     }
@@ -111,7 +111,7 @@ public class HttpRankingRepository implements RankingRepository {
     }
 
     /*
-     * Following workaround has been done considering the following article:
+     * Following workaround has been done considering the article:
      *  - https://www.baeldung.com/spring-webclient-simultaneous-calls#1-multiple-calls-to-the-same-service
      * Could be improved though
      * */
