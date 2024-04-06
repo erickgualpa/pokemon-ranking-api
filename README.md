@@ -31,7 +31,7 @@ Infrastructure could be refactored and optimized.
 Domain is sufficiently well-defined to allow the addition of new rankings also giving freedom on the limit factor but
 infrastructure is
 tightly coupled to the PokéAPI. Considering that, the solution provided is just a first first approach to make it "production ready"
-but to be actually ready alternatives like caching should be considered. Even whe caching could be a nightmare most of
+but to be actually ready alternatives like caching should be considered. Even when caching could be a nightmare most of
 the time, the nature
 of the problem faced seems to be requesting it as the dependency with the PokéAPI is requiring HTTP requests each time a
 ranking is built.
