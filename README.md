@@ -8,12 +8,12 @@
 
 #### Decisions made
 
-I think that most relevant thing is having used hexagonal architecture to shape the project. I know there are many other
+I think that most relevant thing is having used a hexagonal architecture to shape the project. I know there are many other
 ways to apply this kind of architecture so this is only the way I see it. It helped not only to define an architecture
 over a service but to also define testing boundaries that more than to be restrictive are orientative.
 
 Furthermore, when I have to implement a solution I try to first consider the problem and for me that means building a
-test that apart from helping to validate my solution also makes me think about other factors that in the first instance
+test that apart from helping to validate the solution also makes me think about other factors that in the first instance
 I could have missed.
 
 Clarified that, I first decided what would be domain and what would be infrastructure on this problem, which was to
@@ -40,11 +40,10 @@ ranking is built.
 In any case, this problem seems to be addressed already by the PokéAPI as the data offered by it are details from beings
 (fantastic beings in this case, but it could be compared to animals) that are not updated frequently. Caching a
 preprocessed view
-from the details required to calculate the rankings could help to reduce possible dependency issues such as time to get
-the data or
-connection failure. The caching could be performed on application startup or on the first request made (depending on
+from the details required to calculate a ranking could help to reduce possible dependency issues such as timeouts or
+connection failures. The caching could be performed on application startup or on the first request made (depending on
 what affects less
-to the service availability). Once something like that is configured, rankings would be built from data now owned by the
+to the service availability). Once something like that is configured, rankings would be built based on data now owned by the
 service, so even
 a two-level-cache could be implemented as well (if needed), holding the most popular rankings built from the main cache.
 
@@ -57,6 +56,7 @@ On this scenario `pokemon-ranking-api` would be just a supplier of rankings base
 - Configure PokéAPI client bean from `PokemonRankingApiConfiguration` instead of building it in `HttpRankingRepository`.
 - Define and throw specific exceptions on sad paths.
 - Add integration tests covering sad paths from `HttpRankingRepository`.
+- Address non-deterministic rankings when there are several Pokémons matching the criteria.
 
 #### Time invested on solution ⏳
 - ~1h ➡️ Lecture of the problem and sketch of the diagram
