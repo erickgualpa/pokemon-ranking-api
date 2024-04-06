@@ -2,6 +2,15 @@
 
 ![CI/CD status](https://github.com/erickgualpa/pokemon-ranking-api/actions/workflows/main.yml/badge.svg)
 
+### Approach details
+
+![alt text](etc/pokemon-ranking-api.png)
+
+#### Decisions made
+
+#### Improvements
+
+---
 🚀 Build and deploy service as container! 🐳
 <br>
 
