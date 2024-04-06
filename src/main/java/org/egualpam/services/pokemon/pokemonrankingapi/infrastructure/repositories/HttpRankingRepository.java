@@ -7,9 +7,13 @@ import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 import java.util.Optional;
+
+import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
 public class HttpRankingRepository implements RankingRepository {
 
@@ -81,17 +85,10 @@ public class HttpRankingRepository implements RankingRepository {
     }
 
     private List<PokemonDto> getPokemonDetails() {
-        return getAllPokemons().results().stream()
-                .map(
-                        r -> {
-                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
-                            return new PokemonDto(
-                                    r.name,
-                                    pokemonDetails.weight(),
-                                    pokemonDetails.height(),
-                                    pokemonDetails.baseExperience()
-                            );
-                        })
+        List<GetAllPokemonsResponse.Pokemon> allPokemons = getAllPokemons().results();
+        List<GetSinglePokemonResponse> allPokemonDetails = getAllPokemonsDetails(allPokemons);
+        return emptyIfNull(allPokemonDetails).stream()
+                .map(r -> new PokemonDto(r.name(), r.weight(), r.height(), r.baseExperience()))
                 .toList();
     }
 
@@ -101,7 +98,6 @@ public class HttpRankingRepository implements RankingRepository {
             getAllPokemonsResponse =
                     pokeApiClient
                             .get()
-                            // TODO: Check the URL used here to avoid limits
                             .uri("/api/v2/pokemon?limit=100000&offset=0")
                             .retrieve()
                             .bodyToMono(GetAllPokemonsResponse.class)
@@ -114,22 +110,28 @@ public class HttpRankingRepository implements RankingRepository {
                 .orElseThrow(() -> new RuntimeException("No pokemons found in the response"));
     }
 
-    private GetSinglePokemonResponse getSinglePokemonDetails(String pokemonUrl) {
-        GetSinglePokemonResponse getSinglePokemonResponse;
+    /*
+     * Following workaround has been done considering the article:
+     *  - https://www.baeldung.com/spring-webclient-simultaneous-calls#1-multiple-calls-to-the-same-service
+     * Could be improved though
+     * */
+    private List<GetSinglePokemonResponse> getAllPokemonsDetails(List<GetAllPokemonsResponse.Pokemon> allPokemons) {
+        return Flux.fromIterable(allPokemons)
+                .flatMap(r -> getSinglePokemonDetailsMono(r.url()))
+                .collectList()
+                .block();
+    }
+
+    private Mono<GetSinglePokemonResponse> getSinglePokemonDetailsMono(String pokemonUrl) {
         try {
-            getSinglePokemonResponse =
-                    pokeApiClient
-                            .get()
-                            .uri(StringUtils.substringAfter(pokemonUrl, pokeApiHost))
-                            .retrieve()
-                            .bodyToMono(GetSinglePokemonResponse.class)
-                            .block();
+            return pokeApiClient
+                    .get()
+                    .uri(StringUtils.substringAfter(pokemonUrl, pokeApiHost))
+                    .retrieve()
+                    .bodyToMono(GetSinglePokemonResponse.class);
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error retrieving pokemon details from pokeApi", e);
         }
-
-        return Optional.ofNullable(getSinglePokemonResponse)
-                .orElseThrow(() -> new RuntimeException("No pokemon details found in the response"));
     }
 
     record GetAllPokemonsResponse(List<Pokemon> results) {

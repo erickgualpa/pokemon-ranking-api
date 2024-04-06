@@ -26,12 +26,12 @@ class FindTop5HeaviestPokemonsFeature extends AbstractIntegrationTest {
                         )
         );
 
-        stubPokemonDetailsResponse(1, 5);
-        stubPokemonDetailsResponse(2, 100);
-        stubPokemonDetailsResponse(3, 35);
-        stubPokemonDetailsResponse(4, 40);
-        stubPokemonDetailsResponse(5, 80);
-        stubPokemonDetailsResponse(6, 15);
+        stubPokemonDetailsResponse(1, "bulbasaur", 5);
+        stubPokemonDetailsResponse(2, "ivysaur", 100);
+        stubPokemonDetailsResponse(3, "venusaur", 35);
+        stubPokemonDetailsResponse(4, "charmander", 40);
+        stubPokemonDetailsResponse(5, "charmeleon", 80);
+        stubPokemonDetailsResponse(6, "charizard", 15);
 
         mockMvc.perform(get("/api/v1/pokemon-ranking/heaviest"))
                 .andExpect(status().isOk())
@@ -60,8 +60,10 @@ class FindTop5HeaviestPokemonsFeature extends AbstractIntegrationTest {
                 );
     }
 
-    private static void stubPokemonDetailsResponse(Integer pokemonId, Integer pokemonWeight) {
-        Body singlePokemonStubResponseBody = Body.fromJsonBytes(getSinglePokemonStubResponse(pokemonWeight).getBytes());
+    private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer pokemonWeight) {
+        Body singlePokemonStubResponseBody = Body.fromJsonBytes(
+                getSinglePokemonStubResponse(name, pokemonWeight).getBytes()
+        );
         wireMockServer.stubFor(
                 WireMock.get(urlEqualTo("/api/v2/pokemon/" + pokemonId + "/"))
                         .willReturn(
@@ -106,11 +108,12 @@ class FindTop5HeaviestPokemonsFeature extends AbstractIntegrationTest {
                 """;
     }
 
-    private static String getSinglePokemonStubResponse(Integer weight) {
+    private static String getSinglePokemonStubResponse(String name, Integer weight) {
         return """
                 {
+                  "name": "%s",
                   "weight": %d
                 }
-                """.formatted(weight);
+                """.formatted(name, weight);
     }
 }
