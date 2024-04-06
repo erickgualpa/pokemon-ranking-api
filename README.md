@@ -2,7 +2,7 @@
 
 ![CI/CD status](https://github.com/erickgualpa/pokemon-ranking-api/actions/workflows/main.yml/badge.svg)
 
-### Approach details
+### Solution details
 
 ![alt text](etc/pokemon-ranking-api.png)
 
