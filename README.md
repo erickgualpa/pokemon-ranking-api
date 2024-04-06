@@ -16,3 +16,38 @@ docker compose down --rmi local
 ``` 
 
 🔹 Use of this service is specified through [SpringDoc OpenAPI Swagger UI](http://localhost:8080/swagger-ui/index.html).
+
+📣 This project has been structured following a Hexagonal Architecture
+
+[//]: # (Directory tree below was generated using 'tree -d -I target' command)
+
+```
+.
+└── src
+    ├── main
+    │   ├── java
+    │   │   └── org
+    │   │       └── egualpam
+    │   │           └── services
+    │   │               └── pokemon
+    │   │                   └── pokemonrankingapi
+    │   │                       ├── application
+    │   │                       ├── domain
+    │   │                       └── infrastructure
+    │   │                           ├── configuration
+    │   │                           ├── controllers
+    │   │                           └── repositories
+    │   └── resources
+    └── test
+        ├── java
+        │   └── org
+        │       └── egualpam
+        │           └── services
+        │               └── pokemon
+        │                   └── pokemonrankingapi
+        │                       ├── application
+        │                       ├── e2e
+        │                       └── infrastructure
+        └── resources
+
+```
