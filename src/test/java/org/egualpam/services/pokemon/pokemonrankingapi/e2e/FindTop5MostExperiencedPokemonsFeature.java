@@ -26,12 +26,12 @@ class FindTop5MostExperiencedPokemonsFeature extends AbstractIntegrationTest {
                         )
         );
 
-        stubPokemonDetailsResponse(1, 45);
-        stubPokemonDetailsResponse(2, 221);
-        stubPokemonDetailsResponse(3, 89);
-        stubPokemonDetailsResponse(4, 75);
-        stubPokemonDetailsResponse(5, 101);
-        stubPokemonDetailsResponse(6, 49);
+        stubPokemonDetailsResponse(1, "bulbasaur", 45);
+        stubPokemonDetailsResponse(2, "ivysaur", 221);
+        stubPokemonDetailsResponse(3, "venusaur", 89);
+        stubPokemonDetailsResponse(4, "charmander", 75);
+        stubPokemonDetailsResponse(5, "charmeleon", 101);
+        stubPokemonDetailsResponse(6, "charizard", 49);
 
         mockMvc.perform(get("/api/v1/pokemon-ranking/most-experienced"))
                 .andExpect(status().isOk())
@@ -60,8 +60,10 @@ class FindTop5MostExperiencedPokemonsFeature extends AbstractIntegrationTest {
                 );
     }
 
-    private static void stubPokemonDetailsResponse(Integer pokemonId, Integer pokemonWeight) {
-        Body singlePokemonStubResponseBody = Body.fromJsonBytes(getSinglePokemonStubResponse(pokemonWeight).getBytes());
+    private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer baseExperience) {
+        Body singlePokemonStubResponseBody = Body.fromJsonBytes(
+                getSinglePokemonStubResponse(name, baseExperience).getBytes()
+        );
         wireMockServer.stubFor(
                 WireMock.get(urlEqualTo("/api/v2/pokemon/" + pokemonId + "/"))
                         .willReturn(
@@ -106,13 +108,14 @@ class FindTop5MostExperiencedPokemonsFeature extends AbstractIntegrationTest {
                 """;
     }
 
-    private static String getSinglePokemonStubResponse(Integer baseExperience) {
+    private static String getSinglePokemonStubResponse(String name, Integer baseExperience) {
         return """
                 {
+                  "name": "%s",
                   "weight": 23,
                   "height": 150,
                   "base_experience": %d
                 }
-                """.formatted(baseExperience);
+                """.formatted(name, baseExperience);
     }
 }

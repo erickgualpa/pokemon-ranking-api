@@ -26,12 +26,12 @@ class FindTop5HighestPokemonsFeature extends AbstractIntegrationTest {
                         )
         );
 
-        stubPokemonDetailsResponse(1, 12);
-        stubPokemonDetailsResponse(2, 87);
-        stubPokemonDetailsResponse(3, 34);
-        stubPokemonDetailsResponse(4, 55);
-        stubPokemonDetailsResponse(5, 267);
-        stubPokemonDetailsResponse(6, 67);
+        stubPokemonDetailsResponse(1, "bulbasaur", 12);
+        stubPokemonDetailsResponse(2, "ivysaur", 87);
+        stubPokemonDetailsResponse(3, "venusaur", 34);
+        stubPokemonDetailsResponse(4, "charmander", 55);
+        stubPokemonDetailsResponse(5, "charmeleon", 267);
+        stubPokemonDetailsResponse(6, "charizard", 67);
 
         mockMvc.perform(get("/api/v1/pokemon-ranking/highest"))
                 .andExpect(status().isOk())
@@ -60,8 +60,10 @@ class FindTop5HighestPokemonsFeature extends AbstractIntegrationTest {
                 );
     }
 
-    private static void stubPokemonDetailsResponse(Integer pokemonId, Integer pokemonWeight) {
-        Body singlePokemonStubResponseBody = Body.fromJsonBytes(getSinglePokemonStubResponse(pokemonWeight).getBytes());
+    private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer pokemonHeight) {
+        Body singlePokemonStubResponseBody = Body.fromJsonBytes(
+                getSinglePokemonStubResponse(name, pokemonHeight).getBytes()
+        );
         wireMockServer.stubFor(
                 WireMock.get(urlEqualTo("/api/v2/pokemon/" + pokemonId + "/"))
                         .willReturn(
@@ -106,12 +108,13 @@ class FindTop5HighestPokemonsFeature extends AbstractIntegrationTest {
                 """;
     }
 
-    private static String getSinglePokemonStubResponse(Integer height) {
+    private static String getSinglePokemonStubResponse(String name, Integer height) {
         return """
                 {
+                  "name": "%s",
                   "weight": 23,
                   "height": %d
                 }
-                """.formatted(height);
+                """.formatted(name, height);
     }
 }
