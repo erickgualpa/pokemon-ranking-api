@@ -1,5 +1,6 @@
 package org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.repositories;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.Ranking;
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
@@ -40,23 +41,17 @@ public class HttpRankingRepository implements RankingRepository {
         if (RankingId.HIGHEST == rankingId) {
             return findHighestPokemonRanking(rankingId);
         }
+        if (RankingId.MOST_EXPERIENCED == rankingId) {
+            return findMostExperiencedPokemonsRanking(rankingId);
+        }
         throw new RuntimeException("Unexpected rankingId");
     }
 
     private Ranking findHeaviestPokemonsRanking(RankingId rankingId) {
-        List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse = getAllPokemons().results();
-
-        List<PokemonDto> pokemons = allPokemonsFromResponse.stream()
-                .map(
-                        r -> {
-                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
-                            return new PokemonDto(r.name, pokemonDetails.weight(), pokemonDetails.height());
-                        })
-                .toList();
-
         Ranking ranking = new Ranking(rankingId);
 
-        pokemons.stream()
+        getPokemonDetails().stream()
+                .filter(p -> p.weight() != null)
                 .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
                 .forEach(p -> ranking.addPokemon(p.name()));
 
@@ -64,23 +59,40 @@ public class HttpRankingRepository implements RankingRepository {
     }
 
     private Ranking findHighestPokemonRanking(RankingId rankingId) {
-        List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse = getAllPokemons().results();
-
-        List<PokemonDto> pokemons = allPokemonsFromResponse.stream()
-                .map(
-                        r -> {
-                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
-                            return new PokemonDto(r.name, pokemonDetails.weight(), pokemonDetails.height());
-                        })
-                .toList();
-
         Ranking ranking = new Ranking(rankingId);
 
-        pokemons.stream()
+        getPokemonDetails().stream()
+                .filter(p -> p.height() != null)
                 .sorted((p1, p2) -> p2.height().compareTo(p1.height()))
                 .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;
+    }
+
+    private Ranking findMostExperiencedPokemonsRanking(RankingId rankingId) {
+        Ranking ranking = new Ranking(rankingId);
+
+        getPokemonDetails().stream()
+                .filter(p -> p.baseExperience() != null)
+                .sorted((p1, p2) -> p2.baseExperience().compareTo(p1.baseExperience()))
+                .forEach(p -> ranking.addPokemon(p.name()));
+
+        return ranking;
+    }
+
+    private List<PokemonDto> getPokemonDetails() {
+        return getAllPokemons().results().stream()
+                .map(
+                        r -> {
+                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
+                            return new PokemonDto(
+                                    r.name,
+                                    pokemonDetails.weight(),
+                                    pokemonDetails.height(),
+                                    pokemonDetails.baseExperience()
+                            );
+                        })
+                .toList();
     }
 
     private GetAllPokemonsResponse getAllPokemons() {
@@ -125,9 +137,15 @@ public class HttpRankingRepository implements RankingRepository {
         }
     }
 
-    record GetSinglePokemonResponse(String name, Integer weight, Integer height) {
+    record GetSinglePokemonResponse(
+            String name,
+            Integer weight,
+            Integer height,
+            @JsonProperty("base_experience")
+            Integer baseExperience
+    ) {
     }
 
-    record PokemonDto(String name, Integer weight, Integer height) {
+    record PokemonDto(String name, Integer weight, Integer height, Integer baseExperience) {
     }
 }

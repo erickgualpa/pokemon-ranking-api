@@ -65,6 +65,25 @@ public class PokemonRankingController {
         );
     }
 
+    @GetMapping("/most-experienced")
+    public ResponseEntity<GetPokemonRankingResponse> getMostExperiencedPokemons() {
+        RankingDTO rankingDTO;
+        try {
+            rankingDTO = retrieveRanking.execute(
+                    new RetrieveRankingQuery(RankingId.MOST_EXPERIENCED.name(), DEFAULT_RANKING_LIMIT)
+            );
+        } catch (Exception e) {
+            logger.error("Unexpected error retrieving ranking", e);
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(
+                new GetPokemonRankingResponse(
+                        rankingDTO.pokemons().stream()
+                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
+                                .toList())
+        );
+    }
+
     public record GetPokemonRankingResponse(List<Pokemon> ranking) {
         record Pokemon(String name) {
         }

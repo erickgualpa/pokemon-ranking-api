@@ -2,5 +2,6 @@ package org.egualpam.services.pokemon.pokemonrankingapi.domain;
 
 public enum RankingId {
     HEAVIEST,
-    HIGHEST
+    HIGHEST,
+    MOST_EXPERIENCED
 }
