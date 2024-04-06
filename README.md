@@ -27,6 +27,29 @@ requests.
 
 #### Solution Improvements
 
+Infrastructure could be refactored and optimized.
+Domain is sufficiently well-defined to allow the addition of new rankings also giving freedom on the limit factor but
+infrastructure is
+tightly coupled to the PokéAPI. Considering that, the solution provided is just a first first approach to make it "
+production ready"
+but to be actually ready alternatives like caching should be considered. Even if caching could be a nightmare most of
+the time, the nature
+of the problem faced seems to be requesting it as the dependency with the PokéAPI is requiring HTTP requests each time a
+ranking is built.
+
+In any case, this problem seems to be addressed already by the PokéAPI as the data offered by it are details from beings
+(fantastic beings in this case, but it could be compared to animals) that are not updated frequently. Caching a
+preprocessed view
+from the details required to calculate the rankings could help to reduce possible dependency issues such as time to get
+the data or
+connection failure. The caching could be performed on application startup or on the first request made (depending on
+what affects less
+to the service availability). Once something like that is configured, rankings would be built from data now owned by the
+service, so even
+a two-level-cache could be implemented as well (if needed), holding the most popular rankings built from the main cache.
+
+On this scenario `pokemon-ranking-api` would be just a supplier of rankings based on in-memory preprocessed data.
+
 #### Code Improvements
 
 - Clean up e2e tests.
