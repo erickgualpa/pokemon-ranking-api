@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.1.4</version>
+        <version>3.2.4</version>
         <relativePath/>
     </parent>
     <groupId>org.egualpam.services.pokemon</groupId>
@@ -42,7 +42,7 @@
 
         <dependency>
             <groupId>org.wiremock</groupId>
-            <artifactId>wiremock</artifactId>
+            <artifactId>wiremock-standalone</artifactId>
             <version>3.5.2</version>
         </dependency>
         <!--  End of Testing dependencies  -->

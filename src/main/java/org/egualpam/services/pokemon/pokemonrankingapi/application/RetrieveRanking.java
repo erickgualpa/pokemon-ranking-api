@@ -15,11 +15,11 @@ public class RetrieveRanking {
     }
 
     public RankingDTO execute(RetrieveRankingQuery query) {
-        RankingId rankingId = RankingId.valueOf(query.rankingId());
+        RankingId rankingId = RankingId.valueOf(query.id());
         List<Pokemon> pokemons = rankingRepository.find(rankingId).getPokemons();
         return new RankingDTO(
                 pokemons.stream()
-                        .limit(query.rankingLimit())
+                        .limit(query.limit())
                         .map(pokemon -> new RankingDTO.Pokemon(pokemon.name()))
                         .toList()
         );

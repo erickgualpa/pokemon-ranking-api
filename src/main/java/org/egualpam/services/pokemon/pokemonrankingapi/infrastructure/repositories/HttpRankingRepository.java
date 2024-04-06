@@ -12,12 +12,13 @@ import java.util.Optional;
 
 public class HttpRankingRepository implements RankingRepository {
 
-    // TODO: This is here just to do the trick with the URLs but this should be amended
+    // TODO: This is here just to do the trick with the URLs but it should be amended
     private final String pokeApiHost;
     private final WebClient pokeApiClient;
 
     public HttpRankingRepository(String pokeApiHost) {
         this.pokeApiHost = pokeApiHost;
+        // TODO: Current webClient configuration is production ready, then it should be amended
         this.pokeApiClient = WebClient
                 .builder()
                 .baseUrl(pokeApiHost)
@@ -26,32 +27,20 @@ public class HttpRankingRepository implements RankingRepository {
                                 .builder()
                                 .codecs(codecs -> codecs
                                         .defaultCodecs()
-                                        .maxInMemorySize(500 * 1024))
+                                        .maxInMemorySize(10 * 1024 * 1024))
                                 .build())
                 .build();
     }
 
     @Override
     public Ranking find(RankingId rankingId) {
-        Optional<GetAllPokemonsResponse> getAllPokemonsResponse = getAllPokemons();
-
-        List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse =
-                getAllPokemonsResponse
-                        .map(GetAllPokemonsResponse::results)
-                        .orElseThrow(() -> new RuntimeException("No pokemons found"));
+        List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse = getAllPokemons().results();
 
         List<PokemonDto> pokemons = allPokemonsFromResponse.stream()
                 .map(
                         r -> {
-                            Optional<GetSinglePokemonResponse> getSinglePokemonResponse =
-                                    getSinglePokemonDetails(r.url());
-
-                            Integer pokemonHeight = getSinglePokemonResponse.map(GetSinglePokemonResponse::weight)
-                                    .orElseThrow(
-                                            () -> new RuntimeException("No pokemon details found")
-                                    );
-
-                            return new PokemonDto(r.name, pokemonHeight);
+                            Integer pokemonWeight = getSinglePokemonDetails(r.url()).weight();
+                            return new PokemonDto(r.name, pokemonWeight);
                         })
                 .toList();
 
@@ -64,24 +53,26 @@ public class HttpRankingRepository implements RankingRepository {
         return ranking;
     }
 
-    private Optional<GetAllPokemonsResponse> getAllPokemons() {
+    private GetAllPokemonsResponse getAllPokemons() {
         GetAllPokemonsResponse getAllPokemonsResponse;
         try {
             getAllPokemonsResponse =
                     pokeApiClient
                             .get()
                             // TODO: Check the URL used here to avoid limits
-                            .uri("/api/v2/pokemon/")
+                            .uri("/api/v2/pokemon?limit=100000&offset=0")
                             .retrieve()
                             .bodyToMono(GetAllPokemonsResponse.class)
                             .block();
         } catch (Exception e) {
             throw new RuntimeException("Unexpected error retrieving all pokemons from pokeApi", e);
         }
-        return Optional.ofNullable(getAllPokemonsResponse);
+
+        return Optional.ofNullable(getAllPokemonsResponse)
+                .orElseThrow(() -> new RuntimeException("No pokemons found in the response"));
     }
 
-    private Optional<GetSinglePokemonResponse> getSinglePokemonDetails(String pokemonUrl) {
+    private GetSinglePokemonResponse getSinglePokemonDetails(String pokemonUrl) {
         GetSinglePokemonResponse getSinglePokemonResponse;
         try {
             getSinglePokemonResponse =
@@ -92,9 +83,11 @@ public class HttpRankingRepository implements RankingRepository {
                             .bodyToMono(GetSinglePokemonResponse.class)
                             .block();
         } catch (Exception e) {
-            throw new RuntimeException("Unexpected error retrieving single pokemon details from pokeApi", e);
+            throw new RuntimeException("Unexpected error retrieving pokemon details from pokeApi", e);
         }
-        return Optional.ofNullable(getSinglePokemonResponse);
+
+        return Optional.ofNullable(getSinglePokemonResponse)
+                .orElseThrow(() -> new RuntimeException("No pokemon details found in the response"));
     }
 
     record GetAllPokemonsResponse(List<Pokemon> results) {

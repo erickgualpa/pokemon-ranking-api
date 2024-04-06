@@ -18,6 +18,7 @@ import java.util.List;
 public class PokemonRankingController {
 
     private static final Logger logger = LoggerFactory.getLogger(PokemonRankingController.class);
+
     private final RetrieveRanking retrieveRanking;
 
     public PokemonRankingController(RetrieveRanking retrieveRanking) {
@@ -28,7 +29,9 @@ public class PokemonRankingController {
     public ResponseEntity<GetHeaviestPokemonsRankingResponse> getHeaviestPokemons() {
         RankingDTO rankingDTO;
         try {
-            rankingDTO = retrieveRanking.execute(new RetrieveRankingQuery(RankingId.HEAVIEST.name(), 5));
+            rankingDTO = retrieveRanking.execute(
+                    new RetrieveRankingQuery(RankingId.HEAVIEST.name(), 5)
+            );
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
