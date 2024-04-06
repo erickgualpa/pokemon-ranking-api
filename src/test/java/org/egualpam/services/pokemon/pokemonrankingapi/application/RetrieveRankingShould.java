@@ -2,10 +2,12 @@ package org.egualpam.services.pokemon.pokemonrankingapi.application;
 
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.Ranking;
+import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
 import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -29,9 +31,10 @@ class RetrieveRankingShould {
         testee = new RetrieveRanking(rankingRepository);
     }
 
-    @Test
-    void returnHeaviestPokemonRanking() {
-        Ranking ranking = new Ranking(HEAVIEST);
+    @EnumSource(RankingId.class)
+    @ParameterizedTest
+    void returnHeaviestPokemonRanking(RankingId rankingId) {
+        Ranking ranking = new Ranking(rankingId);
         ranking.getPokemons().addAll(
                 List.of(
                         new Pokemon(randomAlphabetic(5)),

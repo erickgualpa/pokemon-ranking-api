@@ -34,13 +34,23 @@ public class HttpRankingRepository implements RankingRepository {
 
     @Override
     public Ranking find(RankingId rankingId) {
+        if (RankingId.HEAVIEST == rankingId) {
+            return findHeaviestPokemonsRanking(rankingId);
+        }
+        if (RankingId.HIGHEST == rankingId) {
+            return findHighestPokemonRanking(rankingId);
+        }
+        throw new RuntimeException("Unexpected rankingId");
+    }
+
+    private Ranking findHeaviestPokemonsRanking(RankingId rankingId) {
         List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse = getAllPokemons().results();
 
         List<PokemonDto> pokemons = allPokemonsFromResponse.stream()
                 .map(
                         r -> {
-                            Integer pokemonWeight = getSinglePokemonDetails(r.url()).weight();
-                            return new PokemonDto(r.name, pokemonWeight);
+                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
+                            return new PokemonDto(r.name, pokemonDetails.weight(), pokemonDetails.height());
                         })
                 .toList();
 
@@ -48,6 +58,26 @@ public class HttpRankingRepository implements RankingRepository {
 
         pokemons.stream()
                 .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
+                .forEach(p -> ranking.addPokemon(p.name()));
+
+        return ranking;
+    }
+
+    private Ranking findHighestPokemonRanking(RankingId rankingId) {
+        List<GetAllPokemonsResponse.Pokemon> allPokemonsFromResponse = getAllPokemons().results();
+
+        List<PokemonDto> pokemons = allPokemonsFromResponse.stream()
+                .map(
+                        r -> {
+                            GetSinglePokemonResponse pokemonDetails = getSinglePokemonDetails(r.url());
+                            return new PokemonDto(r.name, pokemonDetails.weight(), pokemonDetails.height());
+                        })
+                .toList();
+
+        Ranking ranking = new Ranking(rankingId);
+
+        pokemons.stream()
+                .sorted((p1, p2) -> p2.height().compareTo(p1.height()))
                 .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;
@@ -95,9 +125,9 @@ public class HttpRankingRepository implements RankingRepository {
         }
     }
 
-    record GetSinglePokemonResponse(String name, Integer weight) {
+    record GetSinglePokemonResponse(String name, Integer weight, Integer height) {
     }
 
-    record PokemonDto(String name, Integer weight) {
+    record PokemonDto(String name, Integer weight, Integer height) {
     }
 }

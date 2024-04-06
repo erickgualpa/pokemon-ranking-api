@@ -19,6 +19,8 @@ public class PokemonRankingController {
 
     private static final Logger logger = LoggerFactory.getLogger(PokemonRankingController.class);
 
+    private static final int DEFAULT_RANKING_LIMIT = 5;
+
     private final RetrieveRanking retrieveRanking;
 
     public PokemonRankingController(RetrieveRanking retrieveRanking) {
@@ -26,25 +28,44 @@ public class PokemonRankingController {
     }
 
     @GetMapping("/heaviest")
-    public ResponseEntity<GetHeaviestPokemonsRankingResponse> getHeaviestPokemons() {
+    public ResponseEntity<GetPokemonRankingResponse> getHeaviestPokemons() {
         RankingDTO rankingDTO;
         try {
             rankingDTO = retrieveRanking.execute(
-                    new RetrieveRankingQuery(RankingId.HEAVIEST.name(), 5)
+                    new RetrieveRankingQuery(RankingId.HEAVIEST.name(), DEFAULT_RANKING_LIMIT)
             );
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
         }
         return ResponseEntity.ok(
-                new GetHeaviestPokemonsRankingResponse(
+                new GetPokemonRankingResponse(
                         rankingDTO.pokemons().stream()
-                                .map(p -> new GetHeaviestPokemonsRankingResponse.Pokemon(p.name()))
+                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
                                 .toList())
         );
     }
 
-    public record GetHeaviestPokemonsRankingResponse(List<Pokemon> ranking) {
+    @GetMapping("/highest")
+    public ResponseEntity<GetPokemonRankingResponse> getHighestPokemons() {
+        RankingDTO rankingDTO;
+        try {
+            rankingDTO = retrieveRanking.execute(
+                    new RetrieveRankingQuery(RankingId.HIGHEST.name(), DEFAULT_RANKING_LIMIT)
+            );
+        } catch (Exception e) {
+            logger.error("Unexpected error retrieving ranking", e);
+            return ResponseEntity.internalServerError().build();
+        }
+        return ResponseEntity.ok(
+                new GetPokemonRankingResponse(
+                        rankingDTO.pokemons().stream()
+                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
+                                .toList())
+        );
+    }
+
+    public record GetPokemonRankingResponse(List<Pokemon> ranking) {
         record Pokemon(String name) {
         }
     }
