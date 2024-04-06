@@ -25,7 +25,7 @@ in [how I integrated my solutions into the main branch](https://github.com/erick
 first trying to resolve the functional requirements and then giving a workaround to the performance issue on the PokéAPI
 requests.
 
-#### Solution Improvements
+#### Solution improvements
 
 Infrastructure could be refactored and optimized.
 Domain is sufficiently well-defined to allow the addition of new rankings also giving freedom on the limit factor but
@@ -50,7 +50,7 @@ a two-level-cache could be implemented as well (if needed), holding the most pop
 
 On this scenario `pokemon-ranking-api` would be just a supplier of rankings based on in-memory preprocessed data.
 
-#### Code Improvements
+#### Code improvements
 
 - Clean up e2e tests.
 - Clean up `HttpRankingRepository`.
@@ -58,7 +58,23 @@ On this scenario `pokemon-ranking-api` would be just a supplier of rankings base
 - Define and throw specific exceptions on sad paths.
 - Add integration tests covering sad paths from `HttpRankingRepository`.
 
+#### Time invested on solution ⏳
+- ~1h ➡️ Lecture of the problem and sketch of the diagram
+- ~4h ➡️ Code implementation
+- ~1h ➡️ Performance issue
+- ~1h ➡️ Decisions made and improvements writing
+
+#### Clarification
+Some parts of this repository have been reused from [one of my repositories](https://github.com/erickgualpa/hotel-management-service) (mainly a simple CI build and docker container deployment process)
+
 ---
+🧪 Run tests
+<br>
+
+```shell script
+./mvnw clean verify
+```
+
 🚀 Build and deploy service as container! 🐳
 <br>
 
