@@ -23,7 +23,7 @@ public class HttpRankingRepository implements RankingRepository {
 
     public HttpRankingRepository(String pokeApiHost) {
         this.pokeApiHost = pokeApiHost;
-        // TODO: Current webClient configuration is production ready, then it should be amended
+        // TODO: Current webClient configuration not is production ready, then it should be amended
         this.pokeApiClient = WebClient
                 .builder()
                 .baseUrl(pokeApiHost)
