@@ -8,7 +8,7 @@
         <version>3.2.4</version>
         <relativePath/>
     </parent>
-    <groupId>org.egualpam.services.pokemon</groupId>
+    <groupId>org.egualpam.contexts.pokemon</groupId>
     <artifactId>pokemon-ranking-api</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>pokemon-ranking-api</name>

@@ -1,4 +1,4 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.application;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
 import java.util.List;
 

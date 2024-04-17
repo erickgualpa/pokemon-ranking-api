@@ -1,10 +1,10 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.configuration;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.egualpam.services.pokemon.pokemonrankingapi.application.RetrieveRanking;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
-import org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.repositories.HttpRankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRanking;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories.HttpRankingRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

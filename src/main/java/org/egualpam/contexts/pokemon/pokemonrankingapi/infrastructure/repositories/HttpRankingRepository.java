@@ -1,10 +1,10 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.repositories;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
