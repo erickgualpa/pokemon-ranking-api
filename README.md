@@ -40,6 +40,7 @@ docker compose down --rmi local
     │   │                   └── pokemonrankingapi
     │   │                       ├── application
     │   │                       ├── domain
+    │   │                       │   └── exceptions
     │   │                       └── infrastructure
     │   │                           ├── configuration
     │   │                           ├── controllers
