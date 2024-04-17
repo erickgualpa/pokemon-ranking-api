@@ -1,9 +1,9 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.application;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.Pokemon;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -15,7 +15,7 @@ import java.util.List;
 
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId.HEAVIEST;
+import static org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId.HEAVIEST;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 

@@ -1,9 +1,9 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.controllers;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.controllers;
 
-import org.egualpam.services.pokemon.pokemonrankingapi.application.RankingDTO;
-import org.egualpam.services.pokemon.pokemonrankingapi.application.RetrieveRanking;
-import org.egualpam.services.pokemon.pokemonrankingapi.application.RetrieveRankingQuery;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RankingDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRanking;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRankingQuery;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;

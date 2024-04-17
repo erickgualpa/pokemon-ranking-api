@@ -1,8 +1,8 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.application;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.Pokemon;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingId;
-import org.egualpam.services.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
 
 import java.util.List;
 

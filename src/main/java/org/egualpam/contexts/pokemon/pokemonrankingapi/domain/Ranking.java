@@ -1,4 +1,4 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.domain;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 
 import java.util.ArrayList;
 import java.util.List;

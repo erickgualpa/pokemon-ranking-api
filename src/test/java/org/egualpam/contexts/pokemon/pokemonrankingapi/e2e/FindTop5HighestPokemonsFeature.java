@@ -1,8 +1,8 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.e2e;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.e2e;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
-import org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -12,53 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class FindTop5HighestPokemonsFeature extends AbstractIntegrationTest {
-
-    @Test
-    void findTop5HighestPokemons() throws Exception {
-        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
-
-        wireMockServer.stubFor(
-                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
-                        .willReturn(
-                                aResponse().withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withResponseBody(allPokemonsStubResponseBody)
-                        )
-        );
-
-        stubPokemonDetailsResponse(1, "bulbasaur", 12);
-        stubPokemonDetailsResponse(2, "ivysaur", 87);
-        stubPokemonDetailsResponse(3, "venusaur", 34);
-        stubPokemonDetailsResponse(4, "charmander", 55);
-        stubPokemonDetailsResponse(5, "charmeleon", 267);
-        stubPokemonDetailsResponse(6, "charizard", 67);
-
-        mockMvc.perform(get("/api/v1/pokemon-ranking/highest"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("""
-                                {
-                                    "ranking": [
-                                      {
-                                        "name": "charmeleon"
-                                      },
-                                      {
-                                        "name": "ivysaur"
-                                      },
-                                      {
-                                        "name": "charizard"
-                                      },
-                                      {
-                                        "name": "charmander"
-                                      },
-                                      {
-                                        "name": "venusaur"
-                                      }
-                                    ]
-                                  }
-                                """
-                        )
-                );
-    }
 
     private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer pokemonHeight) {
         Body singlePokemonStubResponseBody = Body.fromJsonBytes(
@@ -116,5 +69,52 @@ class FindTop5HighestPokemonsFeature extends AbstractIntegrationTest {
                   "height": %d
                 }
                 """.formatted(name, height);
+    }
+
+    @Test
+    void findTop5HighestPokemons() throws Exception {
+        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
+
+        wireMockServer.stubFor(
+                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
+                        .willReturn(
+                                aResponse().withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withResponseBody(allPokemonsStubResponseBody)
+                        )
+        );
+
+        stubPokemonDetailsResponse(1, "bulbasaur", 12);
+        stubPokemonDetailsResponse(2, "ivysaur", 87);
+        stubPokemonDetailsResponse(3, "venusaur", 34);
+        stubPokemonDetailsResponse(4, "charmander", 55);
+        stubPokemonDetailsResponse(5, "charmeleon", 267);
+        stubPokemonDetailsResponse(6, "charizard", 67);
+
+        mockMvc.perform(get("/api/v1/pokemon-ranking/highest"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                                {
+                                    "ranking": [
+                                      {
+                                        "name": "charmeleon"
+                                      },
+                                      {
+                                        "name": "ivysaur"
+                                      },
+                                      {
+                                        "name": "charizard"
+                                      },
+                                      {
+                                        "name": "charmander"
+                                      },
+                                      {
+                                        "name": "venusaur"
+                                      }
+                                    ]
+                                  }
+                                """
+                        )
+                );
     }
 }

@@ -1,8 +1,8 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.e2e;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.e2e;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
-import org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -12,53 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class FindTop5MostExperiencedPokemonsFeature extends AbstractIntegrationTest {
-
-    @Test
-    void findTop5MostExperiencedPokemons() throws Exception {
-        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
-
-        wireMockServer.stubFor(
-                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
-                        .willReturn(
-                                aResponse().withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withResponseBody(allPokemonsStubResponseBody)
-                        )
-        );
-
-        stubPokemonDetailsResponse(1, "bulbasaur", 45);
-        stubPokemonDetailsResponse(2, "ivysaur", 221);
-        stubPokemonDetailsResponse(3, "venusaur", 89);
-        stubPokemonDetailsResponse(4, "charmander", 75);
-        stubPokemonDetailsResponse(5, "charmeleon", 101);
-        stubPokemonDetailsResponse(6, "charizard", 49);
-
-        mockMvc.perform(get("/api/v1/pokemon-ranking/most-experienced"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("""
-                                {
-                                    "ranking": [
-                                      {
-                                        "name": "ivysaur"
-                                      },
-                                      {
-                                        "name": "charmeleon"
-                                      },
-                                      {
-                                        "name": "venusaur"
-                                      },
-                                      {
-                                        "name": "charmander"
-                                      },
-                                      {
-                                        "name": "charizard"
-                                      }
-                                    ]
-                                  }
-                                """
-                        )
-                );
-    }
 
     private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer baseExperience) {
         Body singlePokemonStubResponseBody = Body.fromJsonBytes(
@@ -117,5 +70,52 @@ class FindTop5MostExperiencedPokemonsFeature extends AbstractIntegrationTest {
                   "base_experience": %d
                 }
                 """.formatted(name, baseExperience);
+    }
+
+    @Test
+    void findTop5MostExperiencedPokemons() throws Exception {
+        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
+
+        wireMockServer.stubFor(
+                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
+                        .willReturn(
+                                aResponse().withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withResponseBody(allPokemonsStubResponseBody)
+                        )
+        );
+
+        stubPokemonDetailsResponse(1, "bulbasaur", 45);
+        stubPokemonDetailsResponse(2, "ivysaur", 221);
+        stubPokemonDetailsResponse(3, "venusaur", 89);
+        stubPokemonDetailsResponse(4, "charmander", 75);
+        stubPokemonDetailsResponse(5, "charmeleon", 101);
+        stubPokemonDetailsResponse(6, "charizard", 49);
+
+        mockMvc.perform(get("/api/v1/pokemon-ranking/most-experienced"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                                {
+                                    "ranking": [
+                                      {
+                                        "name": "ivysaur"
+                                      },
+                                      {
+                                        "name": "charmeleon"
+                                      },
+                                      {
+                                        "name": "venusaur"
+                                      },
+                                      {
+                                        "name": "charmander"
+                                      },
+                                      {
+                                        "name": "charizard"
+                                      }
+                                    ]
+                                  }
+                                """
+                        )
+                );
     }
 }

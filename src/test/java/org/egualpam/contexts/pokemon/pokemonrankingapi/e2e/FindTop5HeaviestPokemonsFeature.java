@@ -1,8 +1,8 @@
-package org.egualpam.services.pokemon.pokemonrankingapi.e2e;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.e2e;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.http.Body;
-import org.egualpam.services.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
@@ -12,53 +12,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 class FindTop5HeaviestPokemonsFeature extends AbstractIntegrationTest {
-
-    @Test
-    void findTop5HeaviestPokemons() throws Exception {
-        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
-
-        wireMockServer.stubFor(
-                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
-                        .willReturn(
-                                aResponse().withStatus(200)
-                                        .withHeader("Content-Type", "application/json")
-                                        .withResponseBody(allPokemonsStubResponseBody)
-                        )
-        );
-
-        stubPokemonDetailsResponse(1, "bulbasaur", 5);
-        stubPokemonDetailsResponse(2, "ivysaur", 100);
-        stubPokemonDetailsResponse(3, "venusaur", 35);
-        stubPokemonDetailsResponse(4, "charmander", 40);
-        stubPokemonDetailsResponse(5, "charmeleon", 80);
-        stubPokemonDetailsResponse(6, "charizard", 15);
-
-        mockMvc.perform(get("/api/v1/pokemon-ranking/heaviest"))
-                .andExpect(status().isOk())
-                .andExpect(content().json("""
-                                {
-                                    "ranking": [
-                                      {
-                                        "name": "ivysaur"
-                                      },
-                                      {
-                                        "name": "charmeleon"
-                                      },
-                                      {
-                                        "name": "charmander"
-                                      },
-                                      {
-                                        "name": "venusaur"
-                                      },
-                                      {
-                                        "name": "charizard"
-                                      }
-                                    ]
-                                  }
-                                """
-                        )
-                );
-    }
 
     private static void stubPokemonDetailsResponse(Integer pokemonId, String name, Integer pokemonWeight) {
         Body singlePokemonStubResponseBody = Body.fromJsonBytes(
@@ -115,5 +68,52 @@ class FindTop5HeaviestPokemonsFeature extends AbstractIntegrationTest {
                   "weight": %d
                 }
                 """.formatted(name, weight);
+    }
+
+    @Test
+    void findTop5HeaviestPokemons() throws Exception {
+        Body allPokemonsStubResponseBody = Body.fromJsonBytes(getAllPokemonsStubResponse().getBytes());
+
+        wireMockServer.stubFor(
+                WireMock.get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
+                        .willReturn(
+                                aResponse().withStatus(200)
+                                        .withHeader("Content-Type", "application/json")
+                                        .withResponseBody(allPokemonsStubResponseBody)
+                        )
+        );
+
+        stubPokemonDetailsResponse(1, "bulbasaur", 5);
+        stubPokemonDetailsResponse(2, "ivysaur", 100);
+        stubPokemonDetailsResponse(3, "venusaur", 35);
+        stubPokemonDetailsResponse(4, "charmander", 40);
+        stubPokemonDetailsResponse(5, "charmeleon", 80);
+        stubPokemonDetailsResponse(6, "charizard", 15);
+
+        mockMvc.perform(get("/api/v1/pokemon-ranking/heaviest"))
+                .andExpect(status().isOk())
+                .andExpect(content().json("""
+                                {
+                                    "ranking": [
+                                      {
+                                        "name": "ivysaur"
+                                      },
+                                      {
+                                        "name": "charmeleon"
+                                      },
+                                      {
+                                        "name": "charmander"
+                                      },
+                                      {
+                                        "name": "venusaur"
+                                      },
+                                      {
+                                        "name": "charizard"
+                                      }
+                                    ]
+                                  }
+                                """
+                        )
+                );
     }
 }
