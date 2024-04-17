@@ -16,10 +16,6 @@ public class RetrieveRanking {
     public RankingDTO execute(RetrieveRankingQuery query) {
         Criteria rankingCriteria = new RankingCriteria(query.id(), query.limit());
         Ranking ranking = rankingRepository.find(rankingCriteria);
-        return new RankingDTO(
-                ranking.getPokemons().stream()
-                        .map(pokemon -> new RankingDTO.Pokemon(pokemon.name()))
-                        .toList()
-        );
+        return new RankingDTO(ranking.getPokemons());
     }
 }
