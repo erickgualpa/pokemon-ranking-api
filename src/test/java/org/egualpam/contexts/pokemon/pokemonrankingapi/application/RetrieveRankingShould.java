@@ -1,21 +1,21 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Criteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingCriteria;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingType;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-
 import static org.apache.commons.lang3.RandomStringUtils.randomAlphabetic;
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId.HEAVIEST;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.Mockito.when;
 
@@ -23,7 +23,11 @@ import static org.mockito.Mockito.when;
 class RetrieveRankingShould {
 
     @Mock
-    private RankingRepository rankingRepository;
+    private AggregateRepository<Ranking> rankingRepository;
+
+    @Captor
+    private ArgumentCaptor<Criteria> criteriaCaptor;
+
     private RetrieveRanking testee;
 
     @BeforeEach
@@ -31,32 +35,35 @@ class RetrieveRankingShould {
         testee = new RetrieveRanking(rankingRepository);
     }
 
-    @EnumSource(RankingId.class)
+    @EnumSource(RankingType.class)
     @ParameterizedTest
-    void returnHeaviestPokemonRanking(RankingId rankingId) {
-        Ranking ranking = new Ranking(rankingId);
-        ranking.getPokemons().addAll(
-                List.of(
-                        new Pokemon(randomAlphabetic(5)),
-                        new Pokemon(randomAlphabetic(5)),
-                        new Pokemon(randomAlphabetic(5)),
-                        new Pokemon(randomAlphabetic(5)),
-                        new Pokemon(randomAlphabetic(5))
-                )
-        );
+    void retrieveRanking(RankingType rankingType) {
+        Integer rankingLimit = 2;
 
-        when(rankingRepository.find(HEAVIEST)).thenReturn(ranking);
+        Ranking ranking = new Ranking(rankingType);
+        ranking.addPokemon(randomAlphabetic(5));
+
+        when(rankingRepository.find(criteriaCaptor.capture())).thenReturn(ranking);
 
         RankingDTO result = testee.execute(
-                new RetrieveRankingQuery("HEAVIEST", 2)
+                new RetrieveRankingQuery(rankingType.name(), rankingLimit)
         );
 
-        assertNotNull(result);
-        assertThat(result.pokemons())
-                .hasSize(2)
-                .containsExactly(
-                        new RankingDTO.Pokemon(ranking.getPokemons().get(0).name()),
-                        new RankingDTO.Pokemon(ranking.getPokemons().get(1).name())
+        Criteria criteria = criteriaCaptor.getValue();
+        assertNotNull(criteria);
+        assertThat(criteria).isInstanceOf(RankingCriteria.class);
+        RankingCriteria rankingCriteria = (RankingCriteria) criteria;
+        assertThat(rankingCriteria.getType()).contains(rankingType);
+        assertThat(rankingCriteria.getLimit())
+                .satisfies(actual -> {
+                            assertThat(actual).isPresent();
+                            assertThat(actual.get().value()).isEqualTo(rankingLimit);
+                        }
                 );
+
+        assertNotNull(result);
+        assertThat(result.pokemons()).containsExactly(
+                new RankingDTO.PokemonDTO(ranking.getPokemons().getFirst().name())
+        );
     }
 }

@@ -3,7 +3,8 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.configura
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRanking;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories.HttpRankingRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -20,12 +21,12 @@ public class PokemonRankingApiConfiguration {
     }
 
     @Bean
-    public RankingRepository httpRankingRepository(@Value("${clients.poke-api.host}") String host) {
+    public AggregateRepository<Ranking> rankingRepository(@Value("${clients.poke-api.host}") String host) {
         return new HttpRankingRepository(host);
     }
 
     @Bean
-    public RetrieveRanking retrieveRanking(RankingRepository rankingRepository) {
+    public RetrieveRanking retrieveRanking(AggregateRepository<Ranking> rankingRepository) {
         return new RetrieveRanking(rankingRepository);
     }
 }

@@ -3,12 +3,21 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class Ranking {
-    private final RankingId id;
+import static java.util.UUID.randomUUID;
+
+public final class Ranking implements AggregateRoot {
+    private final AggregateId id;
+    private final RankingType type;
     private final List<Pokemon> pokemons = new ArrayList<>();
 
-    public Ranking(RankingId id) {
-        this.id = id;
+    public Ranking(RankingType type) {
+        this.id = new AggregateId(randomUUID().toString());
+        this.type = type;
+    }
+
+    @Override
+    public AggregateId getId() {
+        return id;
     }
 
     public void addPokemon(String pokemonName) {
@@ -16,7 +25,9 @@ public final class Ranking {
     }
 
     public List<Pokemon> getPokemons() {
-        // TODO: Return a deep copy of the original list
-        return pokemons;
+        return pokemons.stream()
+                .map(p -> new Pokemon(p.name()))
+                .toList();
     }
+
 }

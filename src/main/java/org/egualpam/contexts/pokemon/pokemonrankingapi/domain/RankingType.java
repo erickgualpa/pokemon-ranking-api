@@ -1,6 +1,6 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 
-public enum RankingId {
+public enum RankingType {
     HEAVIEST,
     HIGHEST,
     MOST_EXPERIENCED

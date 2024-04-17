@@ -2,9 +2,13 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositor
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Criteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingCriteria;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingLimit;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingType;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -15,7 +19,7 @@ import java.util.Optional;
 
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
-public class HttpRankingRepository implements RankingRepository {
+public class HttpRankingRepository implements AggregateRepository<Ranking> {
 
     // TODO: This is here just to do the trick with the URLs but it should be amended
     private final String pokeApiHost;
@@ -38,47 +42,55 @@ public class HttpRankingRepository implements RankingRepository {
     }
 
     @Override
-    public Ranking find(RankingId rankingId) {
-        if (RankingId.HEAVIEST == rankingId) {
-            return findHeaviestPokemonsRanking(rankingId);
+    public Ranking find(Criteria criteria) {
+        RankingCriteria rankingCriteria = (RankingCriteria) criteria;
+        RankingType rankingType = rankingCriteria.getType().orElseThrow(RequiredPropertyIsMissing::new);
+        RankingLimit rankingLimit = rankingCriteria.getLimit().orElseThrow(RequiredPropertyIsMissing::new);
+
+        if (RankingType.HEAVIEST == rankingType) {
+            return findHeaviestPokemonsRanking(rankingType, rankingLimit);
         }
-        if (RankingId.HIGHEST == rankingId) {
-            return findHighestPokemonRanking(rankingId);
+        if (RankingType.HIGHEST == rankingType) {
+            return findHighestPokemonRanking(rankingType, rankingLimit);
         }
-        if (RankingId.MOST_EXPERIENCED == rankingId) {
-            return findMostExperiencedPokemonsRanking(rankingId);
+        if (RankingType.MOST_EXPERIENCED == rankingType) {
+            return findMostExperiencedPokemonsRanking(rankingType, rankingLimit);
         }
+
         throw new RuntimeException("Unexpected rankingId");
     }
 
-    private Ranking findHeaviestPokemonsRanking(RankingId rankingId) {
-        Ranking ranking = new Ranking(rankingId);
+    private Ranking findHeaviestPokemonsRanking(RankingType rankingType, RankingLimit rankingLimit) {
+        Ranking ranking = new Ranking(rankingType);
 
         getPokemonDetails().stream()
                 .filter(p -> p.weight() != null)
                 .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
+                .limit(rankingLimit.value())
                 .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;
     }
 
-    private Ranking findHighestPokemonRanking(RankingId rankingId) {
-        Ranking ranking = new Ranking(rankingId);
+    private Ranking findHighestPokemonRanking(RankingType rankingType, RankingLimit rankingLimit) {
+        Ranking ranking = new Ranking(rankingType);
 
         getPokemonDetails().stream()
                 .filter(p -> p.height() != null)
                 .sorted((p1, p2) -> p2.height().compareTo(p1.height()))
+                .limit(rankingLimit.value())
                 .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;
     }
 
-    private Ranking findMostExperiencedPokemonsRanking(RankingId rankingId) {
-        Ranking ranking = new Ranking(rankingId);
+    private Ranking findMostExperiencedPokemonsRanking(RankingType rankingType, RankingLimit rankingLimit) {
+        Ranking ranking = new Ranking(rankingType);
 
         getPokemonDetails().stream()
                 .filter(p -> p.baseExperience() != null)
                 .sorted((p1, p2) -> p2.baseExperience().compareTo(p1.baseExperience()))
+                .limit(rankingLimit.value())
                 .forEach(p -> ranking.addPokemon(p.name()));
 
         return ranking;

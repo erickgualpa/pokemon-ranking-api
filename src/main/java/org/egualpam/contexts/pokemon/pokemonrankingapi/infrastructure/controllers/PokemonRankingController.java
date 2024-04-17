@@ -3,7 +3,7 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.controlle
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RankingDTO;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRanking;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRankingQuery;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingId;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -32,7 +32,7 @@ public class PokemonRankingController {
         RankingDTO rankingDTO;
         try {
             rankingDTO = retrieveRanking.execute(
-                    new RetrieveRankingQuery(RankingId.HEAVIEST.name(), DEFAULT_RANKING_LIMIT)
+                    new RetrieveRankingQuery(RankingType.HEAVIEST.name(), DEFAULT_RANKING_LIMIT)
             );
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
@@ -51,7 +51,7 @@ public class PokemonRankingController {
         RankingDTO rankingDTO;
         try {
             rankingDTO = retrieveRanking.execute(
-                    new RetrieveRankingQuery(RankingId.HIGHEST.name(), DEFAULT_RANKING_LIMIT)
+                    new RetrieveRankingQuery(RankingType.HIGHEST.name(), DEFAULT_RANKING_LIMIT)
             );
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
@@ -70,7 +70,7 @@ public class PokemonRankingController {
         RankingDTO rankingDTO;
         try {
             rankingDTO = retrieveRanking.execute(
-                    new RetrieveRankingQuery(RankingId.MOST_EXPERIENCED.name(), DEFAULT_RANKING_LIMIT)
+                    new RetrieveRankingQuery(RankingType.MOST_EXPERIENCED.name(), DEFAULT_RANKING_LIMIT)
             );
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
