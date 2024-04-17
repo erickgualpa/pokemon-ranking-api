@@ -6,6 +6,7 @@ import java.util.List;
 import static java.util.UUID.randomUUID;
 
 public final class Ranking implements AggregateRoot {
+
     private final AggregateId id;
     private final RankingType type;
     private final List<Pokemon> pokemons = new ArrayList<>();
@@ -25,9 +26,6 @@ public final class Ranking implements AggregateRoot {
     }
 
     public List<Pokemon> getPokemons() {
-        return pokemons.stream()
-                .map(p -> new Pokemon(p.name()))
-                .toList();
+        return pokemons.stream().toList();
     }
-
 }
