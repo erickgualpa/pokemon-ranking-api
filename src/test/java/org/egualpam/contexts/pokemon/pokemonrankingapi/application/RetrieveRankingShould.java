@@ -63,7 +63,7 @@ class RetrieveRankingShould {
 
         assertNotNull(result);
         assertThat(result.pokemons()).containsExactly(
-                new RankingDTO.PokemonDTO(ranking.getPokemons().getFirst().name())
+                new PokemonDTO(ranking.getPokemons().getFirst().name())
         );
     }
 }

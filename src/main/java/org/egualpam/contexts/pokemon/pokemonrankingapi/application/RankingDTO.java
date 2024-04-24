@@ -10,7 +10,7 @@ public final class RankingDTO {
 
     public RankingDTO(List<Pokemon> pokemons) {
         this.pokemons = pokemons.stream()
-                .map(pokemon -> new RankingDTO.PokemonDTO(pokemon.name()))
+                .map(pokemon -> new PokemonDTO(pokemon.name()))
                 .toList();
     }
 
@@ -29,8 +29,5 @@ public final class RankingDTO {
     @Override
     public int hashCode() {
         return Objects.hash(pokemons);
-    }
-
-    public record PokemonDTO(String name) {
     }
 }

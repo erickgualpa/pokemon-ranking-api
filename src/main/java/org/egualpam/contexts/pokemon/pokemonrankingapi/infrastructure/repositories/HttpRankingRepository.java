@@ -60,6 +60,11 @@ public class HttpRankingRepository implements AggregateRepository<Ranking> {
         throw new RuntimeException("Unexpected rankingId");
     }
 
+    @Override
+    public List<Ranking> findMatching(Criteria criteria) {
+        throw new RuntimeException("Not implemented");
+    }
+
     private Ranking findHeaviestPokemonsRanking(RankingType rankingType, RankingLimit rankingLimit) {
         Ranking ranking = new Ranking(rankingType);
 
