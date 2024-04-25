@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;

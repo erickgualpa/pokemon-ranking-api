@@ -1,11 +1,11 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.configuration;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.FindPokemons;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories.PokemonRepositoryFacade;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.PokemonRepositoryFacade;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
