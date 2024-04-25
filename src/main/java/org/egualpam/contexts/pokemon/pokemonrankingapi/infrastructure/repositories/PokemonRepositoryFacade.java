@@ -4,10 +4,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.apache.commons.lang3.StringUtils;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Criteria;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingCriteria;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingLimit;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.RankingType;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Limit;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -19,13 +19,13 @@ import java.util.Optional;
 
 import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
-public class HttpRankingRepository implements AggregateRepository<Ranking> {
+public final class PokemonRepositoryFacade implements AggregateRepository<Pokemon> {
 
     // TODO: This is here just to do the trick with the URLs but it should be amended
     private final String pokeApiHost;
     private final WebClient pokeApiClient;
 
-    public HttpRankingRepository(String pokeApiHost) {
+    public PokemonRepositoryFacade(String pokeApiHost) {
         this.pokeApiHost = pokeApiHost;
         // TODO: Current webClient configuration not is production ready, then it should be amended
         this.pokeApiClient = WebClient
@@ -42,70 +42,49 @@ public class HttpRankingRepository implements AggregateRepository<Ranking> {
     }
 
     @Override
-    public Ranking find(Criteria criteria) {
-        RankingCriteria rankingCriteria = (RankingCriteria) criteria;
-        RankingType rankingType = rankingCriteria.getType().orElseThrow(RequiredPropertyIsMissing::new);
-        RankingLimit rankingLimit = rankingCriteria.getLimit().orElseThrow(RequiredPropertyIsMissing::new);
-
-        if (RankingType.HEAVIEST == rankingType) {
-            return findHeaviestPokemonsRanking(rankingType, rankingLimit);
-        }
-        if (RankingType.HIGHEST == rankingType) {
-            return findHighestPokemonRanking(rankingType, rankingLimit);
-        }
-        if (RankingType.MOST_EXPERIENCED == rankingType) {
-            return findMostExperiencedPokemonsRanking(rankingType, rankingLimit);
-        }
-
-        throw new RuntimeException("Unexpected rankingId");
+    public List<Pokemon> findMatching(Criteria criteria) {
+        PokemonCriteria pokemonCriteria = (PokemonCriteria) criteria;
+        SortBy sortBy = pokemonCriteria.getType().orElseThrow(RequiredPropertyIsMissing::new);
+        Limit limit = pokemonCriteria.getLimit().orElseThrow(RequiredPropertyIsMissing::new);
+        return switch (sortBy) {
+            case HEIGHT -> findSortedByHeight(limit);
+            case WEIGHT -> findSortedByWeight(limit);
+            case BASE_EXPERIENCE -> findSortedByBaseExperience(limit);
+        };
     }
 
-    @Override
-    public List<Ranking> findMatching(Criteria criteria) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    private Ranking findHeaviestPokemonsRanking(RankingType rankingType, RankingLimit rankingLimit) {
-        Ranking ranking = new Ranking(rankingType);
-
-        getPokemonDetails().stream()
-                .filter(p -> p.weight() != null)
-                .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
-                .limit(rankingLimit.value())
-                .forEach(p -> ranking.addPokemon(p.name()));
-
-        return ranking;
-    }
-
-    private Ranking findHighestPokemonRanking(RankingType rankingType, RankingLimit rankingLimit) {
-        Ranking ranking = new Ranking(rankingType);
-
-        getPokemonDetails().stream()
+    private List<Pokemon> findSortedByHeight(Limit limit) {
+        return getPokemonDetails().stream()
                 .filter(p -> p.height() != null)
                 .sorted((p1, p2) -> p2.height().compareTo(p1.height()))
-                .limit(rankingLimit.value())
-                .forEach(p -> ranking.addPokemon(p.name()));
-
-        return ranking;
+                .limit(limit.value())
+                .map(p -> new Pokemon(p.name()))
+                .toList();
     }
 
-    private Ranking findMostExperiencedPokemonsRanking(RankingType rankingType, RankingLimit rankingLimit) {
-        Ranking ranking = new Ranking(rankingType);
+    private List<Pokemon> findSortedByWeight(Limit limit) {
+        return getPokemonDetails().stream()
+                .filter(p -> p.weight() != null)
+                .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
+                .limit(limit.value())
+                .map(p -> new Pokemon(p.name()))
+                .toList();
+    }
 
-        getPokemonDetails().stream()
+    private List<Pokemon> findSortedByBaseExperience(Limit limit) {
+        return getPokemonDetails().stream()
                 .filter(p -> p.baseExperience() != null)
                 .sorted((p1, p2) -> p2.baseExperience().compareTo(p1.baseExperience()))
-                .limit(rankingLimit.value())
-                .forEach(p -> ranking.addPokemon(p.name()));
-
-        return ranking;
+                .limit(limit.value())
+                .map(p -> new Pokemon(p.name()))
+                .toList();
     }
 
-    private List<PokemonDto> getPokemonDetails() {
+    private List<PokemonDTO> getPokemonDetails() {
         List<GetAllPokemonsResponse.Pokemon> allPokemons = getAllPokemons().results();
         List<GetSinglePokemonResponse> allPokemonDetails = getAllPokemonsDetails(allPokemons);
         return emptyIfNull(allPokemonDetails).stream()
-                .map(r -> new PokemonDto(r.name(), r.weight(), r.height(), r.baseExperience()))
+                .map(r -> new PokemonDTO(r.name(), r.weight(), r.height(), r.baseExperience()))
                 .toList();
     }
 
@@ -151,7 +130,7 @@ public class HttpRankingRepository implements AggregateRepository<Ranking> {
         }
     }
 
-    record GetAllPokemonsResponse(List<Pokemon> results) {
+    record GetAllPokemonsResponse(List<GetAllPokemonsResponse.Pokemon> results) {
         record Pokemon(String name, String url) {
         }
     }
@@ -165,6 +144,6 @@ public class HttpRankingRepository implements AggregateRepository<Ranking> {
     ) {
     }
 
-    record PokemonDto(String name, Integer weight, Integer height, Integer baseExperience) {
+    record PokemonDTO(String name, Integer weight, Integer height, Integer baseExperience) {
     }
 }

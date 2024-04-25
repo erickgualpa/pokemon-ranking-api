@@ -1,7 +1,9 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 
 public enum SortBy {
-    WEIGHT;
+    HEIGHT,
+    WEIGHT,
+    BASE_EXPERIENCE;
 
     public static SortBy fromString(String value) {
         try {

@@ -11,8 +11,8 @@ public final class PokemonCriteria implements Criteria {
     private final SortBy sortBy;
     private final Limit limit;
 
-    public PokemonCriteria(String type) {
-        this.sortBy = nonNull(type) ? SortBy.fromString(type) : null;
+    public PokemonCriteria(String sortBy) {
+        this.sortBy = nonNull(sortBy) ? SortBy.fromString(sortBy) : null;
         this.limit = new Limit(DEFAULT_LIMIT);
     }
 

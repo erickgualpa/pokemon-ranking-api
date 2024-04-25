@@ -1,11 +1,12 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonEntity;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
 import org.mockito.Mock;
@@ -18,32 +19,33 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindPokemonShould {
+class FindPokemonsShould {
 
-    private FindPokemon testee;
+    private FindPokemons testee;
 
     @Captor
     private ArgumentCaptor<PokemonCriteria> criteriaCaptor;
 
     @Mock
-    private AggregateRepository<PokemonEntity> pokemonRepository;
+    private AggregateRepository<Pokemon> pokemonRepository;
 
     @BeforeEach
     void setUp() {
-        testee = new FindPokemon(pokemonRepository);
+        testee = new FindPokemons(pokemonRepository);
     }
 
-    @Test
-    void findPokemon() {
+    @ValueSource(strings = {"weight", "height", "base_experience"})
+    @ParameterizedTest
+    void findPokemon(String sortBy) {
         String pokemonName = randomAlphabetic(5);
         when(pokemonRepository.findMatching(criteriaCaptor.capture())).thenReturn(
-                List.of(new PokemonEntity(pokemonName))
+                List.of(new Pokemon(pokemonName))
         );
 
-        FindPokemonQuery weight = new FindPokemonQuery("weight");
+        FindPokemonQuery weight = new FindPokemonQuery(sortBy);
         List<PokemonDTO> result = testee.execute(weight);
 
         assertThat(result).containsExactly(new PokemonDTO(pokemonName));
-        assertThat(criteriaCaptor.getValue()).usingRecursiveComparison().isEqualTo(new PokemonCriteria("weight"));
+        assertThat(criteriaCaptor.getValue()).usingRecursiveComparison().isEqualTo(new PokemonCriteria(sortBy));
     }
 }

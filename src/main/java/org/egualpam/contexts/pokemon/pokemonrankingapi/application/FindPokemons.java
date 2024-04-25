@@ -2,16 +2,16 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Criteria;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonEntity;
 
 import java.util.List;
 
-public class FindPokemon {
+public final class FindPokemons {
 
-    private final AggregateRepository<PokemonEntity> pokemonRepository;
+    private final AggregateRepository<Pokemon> pokemonRepository;
 
-    public FindPokemon(AggregateRepository<PokemonEntity> pokemonRepository) {
+    public FindPokemons(AggregateRepository<Pokemon> pokemonRepository) {
         this.pokemonRepository = pokemonRepository;
     }
 
