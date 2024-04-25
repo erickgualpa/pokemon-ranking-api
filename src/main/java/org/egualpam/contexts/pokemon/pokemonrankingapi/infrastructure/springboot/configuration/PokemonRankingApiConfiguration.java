@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.configuration;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;

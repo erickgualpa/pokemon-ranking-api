@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.controllers;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.controllers;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDTO;
 
