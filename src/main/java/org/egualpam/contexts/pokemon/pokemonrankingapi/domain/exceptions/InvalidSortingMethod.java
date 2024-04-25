@@ -1,4 +1,4 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions;
 
-public final class RequiredPropertyIsMissing extends RuntimeException {
+public final class InvalidSortingMethod extends RuntimeException {
 }

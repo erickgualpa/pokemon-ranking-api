@@ -1,4 +1,4 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 
-public record RankingLimit(Integer value) {
+public record Limit(Integer value) {
 }

@@ -2,10 +2,10 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.configura
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.RetrieveRanking;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.FindPokemons;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Ranking;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories.HttpRankingRepository;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.repositories.PokemonRepositoryFacade;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -21,12 +21,12 @@ public class PokemonRankingApiConfiguration {
     }
 
     @Bean
-    public AggregateRepository<Ranking> rankingRepository(@Value("${clients.poke-api.host}") String host) {
-        return new HttpRankingRepository(host);
+    public AggregateRepository<Pokemon> pokemonRepository(@Value("${clients.poke-api.host}") String host) {
+        return new PokemonRepositoryFacade(host);
     }
 
     @Bean
-    public RetrieveRanking retrieveRanking(AggregateRepository<Ranking> rankingRepository) {
-        return new RetrieveRanking(rankingRepository);
+    public FindPokemons findPokemon(AggregateRepository<Pokemon> pokemonRepository) {
+        return new FindPokemons(pokemonRepository);
     }
 }

@@ -1,4 +1,4 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-public record RetrieveRankingQuery(String id, Integer limit) {
+public record PokemonDTO(String name) {
 }
