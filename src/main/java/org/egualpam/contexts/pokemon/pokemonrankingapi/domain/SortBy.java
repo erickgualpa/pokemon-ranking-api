@@ -1,5 +1,7 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.domain;
 
+import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.InvalidSortingMethod;
+
 public enum SortBy {
     HEIGHT,
     WEIGHT,
@@ -9,8 +11,7 @@ public enum SortBy {
         try {
             return SortBy.valueOf(value.toUpperCase());
         } catch (IllegalArgumentException e) {
-            // TODO: Create a custom exception
-            throw new RuntimeException("Invalid sorting criteria");
+            throw new InvalidSortingMethod();
         }
     }
 }
