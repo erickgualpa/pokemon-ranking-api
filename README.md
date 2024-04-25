@@ -42,9 +42,11 @@ docker compose down --rmi local
     │   │                       ├── domain
     │   │                       │   └── exceptions
     │   │                       └── infrastructure
-    │   │                           ├── configuration
-    │   │                           ├── controllers
-    │   │                           └── repositories
+    │   │                           ├── adapters
+    │   │                           │   └── repositories
+    │   │                           └── springboot
+    │   │                               ├── configuration
+    │   │                               └── controllers
     │   └── resources
     └── test
         ├── java
