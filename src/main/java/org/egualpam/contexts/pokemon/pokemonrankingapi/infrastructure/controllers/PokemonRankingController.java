@@ -34,12 +34,7 @@ public final class PokemonRankingController {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(
-                new GetPokemonRankingResponse(
-                        pokemons.stream()
-                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
-                                .toList())
-        );
+        return ResponseEntity.ok(new GetPokemonRankingResponse(pokemons));
     }
 
     @GetMapping("/highest")
@@ -51,12 +46,7 @@ public final class PokemonRankingController {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(
-                new GetPokemonRankingResponse(
-                        pokemons.stream()
-                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
-                                .toList())
-        );
+        return ResponseEntity.ok(new GetPokemonRankingResponse(pokemons));
     }
 
     @GetMapping("/most-experienced")
@@ -68,16 +58,6 @@ public final class PokemonRankingController {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
         }
-        return ResponseEntity.ok(
-                new GetPokemonRankingResponse(
-                        pokemons.stream()
-                                .map(p -> new GetPokemonRankingResponse.Pokemon(p.name()))
-                                .toList())
-        );
-    }
-
-    public record GetPokemonRankingResponse(List<Pokemon> ranking) {
-        record Pokemon(String name) {
-        }
+        return ResponseEntity.ok(new GetPokemonRankingResponse(pokemons));
     }
 }
