@@ -9,6 +9,8 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.r
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
+import org.springframework.web.reactive.function.client.WebClient;
 
 @Configuration
 public class PokemonRankingApiConfiguration {
@@ -21,8 +23,26 @@ public class PokemonRankingApiConfiguration {
     }
 
     @Bean
-    public AggregateRepository<Pokemon> pokemonRepository(@Value("${clients.poke-api.host}") String host) {
-        return new PokemonRepositoryFacade(host);
+    public WebClient defaultWebClient() {
+        return WebClient
+                .builder()
+                .exchangeStrategies(
+                        ExchangeStrategies
+                                .builder()
+                                .codecs(codecs -> codecs
+                                        .defaultCodecs()
+                                        .maxInMemorySize(10 * 1024 * 1024))
+                                .build())
+                .build();
+    }
+
+    @Bean
+    public AggregateRepository<Pokemon> pokemonRepository(
+            WebClient webClient,
+            @Value("${clients.poke-api.host}") String pokeApiHost,
+            @Value("${clients.poke-api.get-pokemons.path}") String getPokemonsPath
+    ) {
+        return new PokemonRepositoryFacade(webClient, pokeApiHost, getPokemonsPath);
     }
 
     @Bean
