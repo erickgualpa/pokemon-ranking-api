@@ -1,7 +1,6 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.apache.commons.lang3.StringUtils;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Criteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Limit;
@@ -9,36 +8,21 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
-import java.util.Optional;
-
-import static org.apache.commons.collections4.ListUtils.emptyIfNull;
 
 public final class PokemonRepositoryFacade implements AggregateRepository<Pokemon> {
 
-    // TODO: This is here just to do the trick with the URLs but it should be amended
+    private final WebClient webClient;
     private final String pokeApiHost;
-    private final WebClient pokeApiClient;
+    private final String getPokemonsPath;
 
-    public PokemonRepositoryFacade(String pokeApiHost) {
+    public PokemonRepositoryFacade(WebClient webClient, String pokeApiHost, String getPokemonsPath) {
+        this.webClient = webClient;
         this.pokeApiHost = pokeApiHost;
-        // TODO: Current webClient configuration not is production ready, then it should be amended
-        this.pokeApiClient = WebClient
-                .builder()
-                .baseUrl(pokeApiHost)
-                .exchangeStrategies(
-                        ExchangeStrategies
-                                .builder()
-                                .codecs(codecs -> codecs
-                                        .defaultCodecs()
-                                        .maxInMemorySize(10 * 1024 * 1024))
-                                .build())
-                .build();
+        this.getPokemonsPath = getPokemonsPath;
     }
 
     @Override
@@ -81,61 +65,32 @@ public final class PokemonRepositoryFacade implements AggregateRepository<Pokemo
     }
 
     private List<PokemonDTO> getPokemonDetails() {
-        List<GetAllPokemonsResponse.Pokemon> allPokemons = getAllPokemons().results();
-        List<GetSinglePokemonResponse> allPokemonDetails = getAllPokemonsDetails(allPokemons);
-        return emptyIfNull(allPokemonDetails).stream()
+        GetPokemonsResponse pokemons =
+                webClient
+                        .get()
+                        .uri(pokeApiHost + getPokemonsPath)
+                        .retrieve()
+                        .bodyToMono(GetPokemonsResponse.class)
+                        .block();
+
+        return Flux.fromIterable(pokemons.results())
+                .flatMap(pokemon ->
+                        webClient
+                                .get()
+                                .uri(pokemon.url())
+                                .retrieve()
+                                .bodyToMono(GetPokemonDetailsResponse.class))
                 .map(r -> new PokemonDTO(r.name(), r.weight(), r.height(), r.baseExperience()))
-                .toList();
-    }
-
-    private GetAllPokemonsResponse getAllPokemons() {
-        GetAllPokemonsResponse getAllPokemonsResponse;
-        try {
-            getAllPokemonsResponse =
-                    pokeApiClient
-                            .get()
-                            .uri("/api/v2/pokemon?limit=100000&offset=0")
-                            .retrieve()
-                            .bodyToMono(GetAllPokemonsResponse.class)
-                            .block();
-        } catch (Exception e) {
-            throw new RuntimeException("Unexpected error retrieving all pokemons from pokeApi", e);
-        }
-
-        return Optional.ofNullable(getAllPokemonsResponse)
-                .orElseThrow(() -> new RuntimeException("No pokemons found in the response"));
-    }
-
-    /*
-     * Following workaround has been done considering the article:
-     *  - https://www.baeldung.com/spring-webclient-simultaneous-calls#1-multiple-calls-to-the-same-service
-     * Could be improved though
-     * */
-    private List<GetSinglePokemonResponse> getAllPokemonsDetails(List<GetAllPokemonsResponse.Pokemon> allPokemons) {
-        return Flux.fromIterable(allPokemons)
-                .flatMap(r -> getSinglePokemonDetailsMono(r.url()))
                 .collectList()
                 .block();
     }
 
-    private Mono<GetSinglePokemonResponse> getSinglePokemonDetailsMono(String pokemonUrl) {
-        try {
-            return pokeApiClient
-                    .get()
-                    .uri(StringUtils.substringAfter(pokemonUrl, pokeApiHost))
-                    .retrieve()
-                    .bodyToMono(GetSinglePokemonResponse.class);
-        } catch (Exception e) {
-            throw new RuntimeException("Unexpected error retrieving pokemon details from pokeApi", e);
-        }
-    }
-
-    record GetAllPokemonsResponse(List<GetAllPokemonsResponse.Pokemon> results) {
+    record GetPokemonsResponse(List<GetPokemonsResponse.Pokemon> results) {
         record Pokemon(String name, String url) {
         }
     }
 
-    record GetSinglePokemonResponse(
+    record GetPokemonDetailsResponse(
             String name,
             Integer weight,
             Integer height,
