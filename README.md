@@ -30,6 +30,7 @@ docker compose down --rmi local
 
 ```
 .
+├── etc
 └── src
     ├── main
     │   ├── java
@@ -44,6 +45,9 @@ docker compose down --rmi local
     │   │                       └── infrastructure
     │   │                           ├── adapters
     │   │                           │   └── repositories
+    │   │                           │       └── suppliers
+    │   │                           │           └── pokemons
+    │   │                           │               └── simple
     │   │                           └── springboot
     │   │                               ├── configuration
     │   │                               └── controllers
