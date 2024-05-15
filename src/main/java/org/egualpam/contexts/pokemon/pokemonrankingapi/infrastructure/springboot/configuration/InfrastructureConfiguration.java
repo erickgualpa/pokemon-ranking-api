@@ -2,7 +2,6 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboo
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.FindPokemons;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.PokemonRepositoryFacade;
@@ -18,7 +17,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 @Configuration
-public class PokemonRankingApiConfiguration {
+public class InfrastructureConfiguration {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
@@ -53,10 +52,5 @@ public class PokemonRankingApiConfiguration {
     @Bean
     public AggregateRepository<Pokemon> pokemonRepository(Supplier<List<PokemonDTO>> pokemonsSupplier) {
         return new PokemonRepositoryFacade(pokemonsSupplier);
-    }
-
-    @Bean
-    public FindPokemons findPokemon(AggregateRepository<Pokemon> pokemonRepository) {
-        return new FindPokemons(pokemonRepository);
     }
 }
