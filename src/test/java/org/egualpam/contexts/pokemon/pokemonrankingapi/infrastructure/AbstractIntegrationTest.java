@@ -1,7 +1,7 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure;
 
 import com.github.tomakehurst.wiremock.WireMockServer;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.PokemonRankingApiConfiguration;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.InfrastructureConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +18,7 @@ import static org.springframework.boot.test.context.SpringBootTest.WebEnvironmen
         webEnvironment = RANDOM_PORT
 )
 @ContextConfiguration(
-        classes = {PokemonRankingApiConfiguration.class}
+        classes = {InfrastructureConfiguration.class}
 )
 public abstract class AbstractIntegrationTest {
 
