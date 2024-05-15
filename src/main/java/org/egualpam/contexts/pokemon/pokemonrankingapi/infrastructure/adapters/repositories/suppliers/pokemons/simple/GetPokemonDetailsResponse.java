@@ -1,8 +1,8 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record GetPokemonDetailsResponse(
+record GetPokemonDetailsResponse(
         String name,
         Integer weight,
         Integer height,
