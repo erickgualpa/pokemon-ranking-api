@@ -1,18 +1,19 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux;
 
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class SimplePokemonsSupplier implements Supplier<List<PokemonDTO>> {
+public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>> {
 
     private final WebClient webClient;
     private final String pokeApiHost;
     private final String getPokemonsPath;
 
-    public SimplePokemonsSupplier(WebClient webClient, String pokeApiHost, String getPokemonsPath) {
+    public WebfluxPokemonsSupplier(WebClient webClient, String pokeApiHost, String getPokemonsPath) {
         this.webClient = webClient;
         this.pokeApiHost = pokeApiHost;
         this.getPokemonsPath = getPokemonsPath;

@@ -7,7 +7,7 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 
 import java.util.List;
 import java.util.function.Supplier;

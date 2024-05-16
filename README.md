@@ -49,7 +49,7 @@ docker compose down --rmi local
     │   │                           │   └── repositories
     │   │                           │       └── suppliers
     │   │                           │           └── pokemons
-    │   │                           │               └── simple
+    │   │                           │               └── webflux
     │   │                           └── springboot
     │   │                               ├── configuration
     │   │                               └── controllers

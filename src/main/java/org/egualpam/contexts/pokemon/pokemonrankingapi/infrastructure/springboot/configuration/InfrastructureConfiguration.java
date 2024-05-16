@@ -5,8 +5,8 @@ import io.swagger.v3.oas.models.info.Info;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.PokemonRepositoryFacade;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple.SimplePokemonsSupplier;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux.WebfluxPokemonsSupplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -46,7 +46,7 @@ public class InfrastructureConfiguration {
             @Value("${clients.poke-api.host}") String pokeApiHost,
             @Value("${clients.poke-api.get-pokemons.path}") String getPokemonsPath
     ) {
-        return new SimplePokemonsSupplier(webClient, pokeApiHost, getPokemonsPath);
+        return new WebfluxPokemonsSupplier(webClient, pokeApiHost, getPokemonsPath);
     }
 
     @Bean
