@@ -1,6 +1,9 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
+import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
 
@@ -13,8 +16,17 @@ public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>>
     private final String pokeApiHost;
     private final String getPokemonsPath;
 
-    public WebfluxPokemonsSupplier(WebClient webClient, String pokeApiHost, String getPokemonsPath) {
-        this.webClient = webClient;
+    public WebfluxPokemonsSupplier(String pokeApiHost, String getPokemonsPath) {
+        this.webClient = WebClient
+                .builder()
+                .exchangeStrategies(
+                        ExchangeStrategies
+                                .builder()
+                                .codecs(codecs -> codecs
+                                        .defaultCodecs()
+                                        .maxInMemorySize(10 * 1024 * 1024))
+                                .build())
+                .build();
         this.pokeApiHost = pokeApiHost;
         this.getPokemonsPath = getPokemonsPath;
     }

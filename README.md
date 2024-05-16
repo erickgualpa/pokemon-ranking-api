@@ -49,6 +49,8 @@ docker compose down --rmi local
     │   │                           │   └── repositories
     │   │                           │       └── suppliers
     │   │                           │           └── pokemons
+    │   │                           │               ├── concurrent
+    │   │                           │               ├── shared
     │   │                           │               └── webflux
     │   │                           └── springboot
     │   │                               ├── configuration
@@ -64,5 +66,10 @@ docker compose down --rmi local
         │                       ├── application
         │                       ├── e2e
         │                       └── infrastructure
+        │                           └── adapters
+        │                               └── repositories
+        │                                   └── suppliers
+        │                                       └── pokemons
+        │                                           └── concurrent
         └── resources
 ```

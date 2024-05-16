@@ -6,12 +6,10 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepositor
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.PokemonRepositoryFacade;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux.WebfluxPokemonsSupplier;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.concurrent.ConcurrentPokemonsSupplier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -27,26 +25,11 @@ public class InfrastructureConfiguration {
     }
 
     @Bean
-    public WebClient defaultWebClient() {
-        return WebClient
-                .builder()
-                .exchangeStrategies(
-                        ExchangeStrategies
-                                .builder()
-                                .codecs(codecs -> codecs
-                                        .defaultCodecs()
-                                        .maxInMemorySize(10 * 1024 * 1024))
-                                .build())
-                .build();
-    }
-
-    @Bean
     public Supplier<List<PokemonDTO>> pokemonsSupplier(
-            WebClient webClient,
             @Value("${clients.poke-api.host}") String pokeApiHost,
             @Value("${clients.poke-api.get-pokemons.path}") String getPokemonsPath
     ) {
-        return new WebfluxPokemonsSupplier(webClient, pokeApiHost, getPokemonsPath);
+        return new ConcurrentPokemonsSupplier(pokeApiHost, getPokemonsPath);
     }
 
     @Bean
