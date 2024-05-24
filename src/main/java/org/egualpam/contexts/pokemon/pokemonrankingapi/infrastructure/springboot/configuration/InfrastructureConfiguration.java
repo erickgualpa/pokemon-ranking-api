@@ -5,17 +5,17 @@ import io.swagger.v3.oas.models.info.Info;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.PokemonRepositoryFacade;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.simple.SimplePokemonsSupplier;
-import org.springframework.beans.factory.annotation.Value;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux.WebfluxPokemonsSupplier;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.reactive.function.client.ExchangeStrategies;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.List;
 import java.util.function.Supplier;
 
+@EnableConfigurationProperties(PokeApiClientProperties.class)
 @Configuration
 public class InfrastructureConfiguration {
     @Bean
@@ -27,26 +27,8 @@ public class InfrastructureConfiguration {
     }
 
     @Bean
-    public WebClient defaultWebClient() {
-        return WebClient
-                .builder()
-                .exchangeStrategies(
-                        ExchangeStrategies
-                                .builder()
-                                .codecs(codecs -> codecs
-                                        .defaultCodecs()
-                                        .maxInMemorySize(10 * 1024 * 1024))
-                                .build())
-                .build();
-    }
-
-    @Bean
-    public Supplier<List<PokemonDTO>> pokemonsSupplier(
-            WebClient webClient,
-            @Value("${clients.poke-api.host}") String pokeApiHost,
-            @Value("${clients.poke-api.get-pokemons.path}") String getPokemonsPath
-    ) {
-        return new SimplePokemonsSupplier(webClient, pokeApiHost, getPokemonsPath);
+    public Supplier<List<PokemonDTO>> pokemonsSupplier(PokeApiClientProperties pokeApiClientProperties) {
+        return new WebfluxPokemonsSupplier(pokeApiClientProperties);
     }
 
     @Bean
