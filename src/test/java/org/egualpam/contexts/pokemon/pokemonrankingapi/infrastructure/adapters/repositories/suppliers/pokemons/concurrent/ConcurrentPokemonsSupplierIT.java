@@ -7,10 +7,10 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.clients.properties.PokeApiClientProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
 import java.util.function.Supplier;
@@ -25,14 +25,11 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
-    @Value("${clients.poke-api.host}")
-    private String pokeApiHost;
-
-    @Value("${clients.poke-api.get-pokemons.path}")
-    private String getPokemonsPath;
-
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Autowired
+    PokeApiClientProperties pokeApiClientProperties;
 
     private Supplier<List<PokemonDTO>> pokemonsSupplier;
 
@@ -65,7 +62,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        pokemonsSupplier = new ConcurrentPokemonsSupplier(pokeApiHost, getPokemonsPath);
+        pokemonsSupplier = new ConcurrentPokemonsSupplier(pokeApiClientProperties);
     }
 
     @Test

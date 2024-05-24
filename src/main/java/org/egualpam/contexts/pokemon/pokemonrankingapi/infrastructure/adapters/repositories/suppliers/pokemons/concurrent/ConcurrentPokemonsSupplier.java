@@ -3,6 +3,7 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.clients.properties.PokeApiClientProperties;
 import org.slf4j.Logger;
 import org.springframework.web.client.RestClient;
 
@@ -24,23 +25,22 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
     private final Logger logger = getLogger(ConcurrentPokemonsSupplier.class);
 
     private final RestClient restClient;
-    private final String pokeApiHost;
-    private final String getPokemonsPath;
+    private final PokeApiClientProperties pokeApiClientProperties;
 
-    public ConcurrentPokemonsSupplier(String pokeApiHost, String getPokemonsPath) {
+    public ConcurrentPokemonsSupplier(PokeApiClientProperties pokeApiClientProperties) {
         this.restClient = RestClient.create();
-        this.pokeApiHost = pokeApiHost;
-        this.getPokemonsPath = getPokemonsPath;
+        this.pokeApiClientProperties = pokeApiClientProperties;
     }
 
     @Override
     public List<PokemonDTO> get() {
-        List<GetPokemonsResponse.Pokemon> servicePokemons = restClient.get()
-                .uri(pokeApiHost + getPokemonsPath)
-                .retrieve()
-                .body(GetPokemonsResponse.class)
-                // TODO: Address NPE warning
-                .results();
+        List<GetPokemonsResponse.Pokemon> servicePokemons =
+                restClient.get()
+                        .uri(pokeApiClientProperties.host() + pokeApiClientProperties.getPokemonsPath())
+                        .retrieve()
+                        .body(GetPokemonsResponse.class)
+                        // TODO: Address NPE warning
+                        .results();
 
         List<PokemonDTO> pokemons = Collections.synchronizedList(new ArrayList<>());
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_MAX_SIZE);
@@ -59,12 +59,11 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
     }
 
     private void getPokemonDetails(GetPokemonsResponse.Pokemon p, List<PokemonDTO> pokemonsResult) {
-        logger.info("Getting details for pokemon: {}", p.name());
-        GetPokemonDetailsResponse pokemonDetails = restClient.get()
-                .uri(p.url())
-                .retrieve()
-                .body(GetPokemonDetailsResponse.class);
-        logger.info("Adding pokemon: {}", p.name());
+        GetPokemonDetailsResponse pokemonDetails =
+                restClient.get()
+                        .uri(p.url())
+                        .retrieve()
+                        .body(GetPokemonDetailsResponse.class);
         pokemonsResult.add(
                 new PokemonDTO(
                         // TODO: Address NPE warning
