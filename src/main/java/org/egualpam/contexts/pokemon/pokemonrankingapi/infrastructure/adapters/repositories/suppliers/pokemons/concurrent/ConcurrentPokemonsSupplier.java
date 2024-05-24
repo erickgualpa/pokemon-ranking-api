@@ -9,10 +9,13 @@ import org.springframework.web.client.RestClient;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
-import static java.time.Instant.now;
 import static org.slf4j.LoggerFactory.getLogger;
 
 public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDTO>> {
@@ -32,34 +35,27 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
 
     @Override
     public List<PokemonDTO> get() {
-        List<GetPokemonsResponse.Pokemon> pokemons = restClient.get()
+        List<GetPokemonsResponse.Pokemon> servicePokemons = restClient.get()
                 .uri(pokeApiHost + getPokemonsPath)
                 .retrieve()
                 .body(GetPokemonsResponse.class)
                 // TODO: Address NPE warning
                 .results();
 
-        List<PokemonDTO> pokemonsResult = new ArrayList<>();
+        List<PokemonDTO> pokemons = Collections.synchronizedList(new ArrayList<>());
+        ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_MAX_SIZE);
 
-        Instant start = now();
-        pokemons.forEach(p -> {
-            Thread thread = new Thread(() -> {
-                // TODO: Check if this whole method needs to be handled concurrently
-                getPokemonDetails(p, pokemonsResult);
-            });
-            thread.start();
-            if (Thread.activeCount() > THREAD_POOL_MAX_SIZE) {
-                logger.info("Waiting for threads to finish");
-                try {
-                    thread.join();
-                } catch (InterruptedException e) {
-                    logger.error("Error while joining thread", e);
-                }
-            }
-        });
-        logger.info("Pokemons retrieved in: {}", Duration.between(start, now()).toMillis());
+        Instant start = Instant.now();
+        servicePokemons.forEach(p -> executorService.submit(() -> getPokemonDetails(p, pokemons)));
+        executorService.shutdown();
+        try {
+            executorService.awaitTermination(1, TimeUnit.MINUTES);
+        } catch (InterruptedException e) {
+            logger.error("Error waiting for executor service termination", e);
+        }
+        logger.info("Pokemons retrieved in: {}", Duration.between(start, Instant.now()).toMillis());
 
-        return pokemonsResult;
+        return pokemons;
     }
 
     private void getPokemonDetails(GetPokemonsResponse.Pokemon p, List<PokemonDTO> pokemonsResult) {
