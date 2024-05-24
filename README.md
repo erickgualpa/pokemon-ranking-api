@@ -54,6 +54,8 @@ docker compose down --rmi local
     │   │                           │               └── webflux
     │   │                           └── springboot
     │   │                               ├── configuration
+    │   │                               │   └── properties
+    │   │                               │       └── clients
     │   │                               └── controllers
     │   └── resources
     └── test

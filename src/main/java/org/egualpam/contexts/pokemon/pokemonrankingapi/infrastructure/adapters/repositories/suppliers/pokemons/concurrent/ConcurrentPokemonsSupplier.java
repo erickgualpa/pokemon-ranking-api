@@ -3,7 +3,7 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.clients.properties.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.slf4j.Logger;
 import org.springframework.web.client.RestClient;
 

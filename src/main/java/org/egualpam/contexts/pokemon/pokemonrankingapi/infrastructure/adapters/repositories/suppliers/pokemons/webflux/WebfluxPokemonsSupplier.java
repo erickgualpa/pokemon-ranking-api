@@ -3,6 +3,7 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;
@@ -12,11 +13,10 @@ import java.util.function.Supplier;
 
 public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>> {
 
+    private final PokeApiClientProperties pokeApiClientProperties;
     private final WebClient webClient;
-    private final String pokeApiHost;
-    private final String getPokemonsPath;
 
-    public WebfluxPokemonsSupplier(String pokeApiHost, String getPokemonsPath) {
+    public WebfluxPokemonsSupplier(PokeApiClientProperties pokeApiClientProperties) {
         this.webClient = WebClient
                 .builder()
                 .exchangeStrategies(
@@ -27,8 +27,7 @@ public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>>
                                         .maxInMemorySize(10 * 1024 * 1024))
                                 .build())
                 .build();
-        this.pokeApiHost = pokeApiHost;
-        this.getPokemonsPath = getPokemonsPath;
+        this.pokeApiClientProperties = pokeApiClientProperties;
     }
 
     @Override
@@ -36,7 +35,7 @@ public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>>
         GetPokemonsResponse pokemons =
                 webClient
                         .get()
-                        .uri(pokeApiHost + getPokemonsPath)
+                        .uri(pokeApiClientProperties.host() + pokeApiClientProperties.getPokemonsPath())
                         .retrieve()
                         .bodyToMono(GetPokemonsResponse.class)
                         .block();

@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.clients.properties.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,11 +26,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
     @Autowired
-    private ObjectMapper objectMapper;
-
-    @Autowired
     PokeApiClientProperties pokeApiClientProperties;
-
+    @Autowired
+    private ObjectMapper objectMapper;
     private Supplier<List<PokemonDTO>> pokemonsSupplier;
 
     private static void stubPokemonDetails(

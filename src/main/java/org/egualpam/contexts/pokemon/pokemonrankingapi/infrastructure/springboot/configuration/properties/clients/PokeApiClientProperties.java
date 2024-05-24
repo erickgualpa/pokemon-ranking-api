@@ -1,11 +1,11 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.clients.properties;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @ConfigurationProperties(prefix = "clients.poke-api")
-public class PokeApiClientProperties {
-    private String host;
-    private GetPokemons getPokemons;
+public final class PokeApiClientProperties {
+    private final String host;
+    private final GetPokemons getPokemons;
 
     public PokeApiClientProperties(String host, GetPokemons getPokemons) {
         this.host = host;
