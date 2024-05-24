@@ -1,10 +1,15 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.concurrent;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 
 import java.util.List;
@@ -13,20 +18,21 @@ import java.util.function.Supplier;
 import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.common.Strings.randomAlphabetic;
 import static com.github.tomakehurst.wiremock.http.Body.fromJsonBytes;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
-    private static final String CHARMELEON = "charmeleon";
-    private static final String BULBASAUR = "bulbasaur";
-
     @Value("${clients.poke-api.host}")
     private String pokeApiHost;
 
     @Value("${clients.poke-api.get-pokemons.path}")
     private String getPokemonsPath;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     private Supplier<List<PokemonDTO>> pokemonsSupplier;
 
@@ -37,7 +43,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
             Integer height,
             Integer baseExperience
     ) {
-        Body singlePokemonStubResponseBody = Body.fromJsonBytes("""
+        Body singlePokemonStubResponseBody = fromJsonBytes("""
                     {
                       "name": "%s",
                       "weight": %d,
@@ -63,55 +69,41 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
     }
 
     @Test
-    void pokemonsGetSupplied() {
-        Integer charmeleonId = nextInt(1, 10);
-        Integer charmeleonWeight = nextInt(1, 100);
-        Integer charmeleonHeight = nextInt(1, 100);
-        Integer charmeleonBaseExperience = nextInt(1, 100);
+    void pokemonsGetSupplied() throws JsonProcessingException {
+        Integer pokemonsAmount = 1500;
 
-        Integer bulbasaurId = nextInt(1, 10);
-        Integer bulbasaurWeight = nextInt(1, 100);
-        Integer bulbasaurHeight = nextInt(1, 100);
-        Integer bulbasaurBaseExperience = nextInt(1, 100);
+        ObjectNode allPokemonsStubResponseBody = objectMapper.createObjectNode();
+        allPokemonsStubResponseBody.put("count", pokemonsAmount);
+        ArrayNode results = allPokemonsStubResponseBody.putArray("results");
 
-        Body allPokemonsStubResponseBody = fromJsonBytes("""
-                    {
-                      "count": 1,
-                      "results": [
-                        {
-                          "name": "%s",
-                          "url": "http://localhost:8081/api/v2/pokemon/%d/"
-                        },
-                        {
-                          "name": "%s",
-                          "url": "http://localhost:8081/api/v2/pokemon/%d/"
-                        }
-                      ]
-                    }
-                """
-                .formatted(
-                        CHARMELEON, charmeleonId,
-                        BULBASAUR, bulbasaurId
-                ).getBytes()
-        );
+        for (int i = 0; i < pokemonsAmount; i++) {
+            String pokemonName = randomAlphabetic(5);
+            Integer pokemonId = i;
+            results.addObject()
+                    .put("name", pokemonName)
+                    .put("url", "http://localhost:8081/api/v2/pokemon/" + pokemonId + "/");
+
+            Integer pokemonWeight = nextInt(1, 100);
+            Integer pokemonHeight = nextInt(1, 100);
+            Integer pokemonBaseExperience = nextInt(1, 100);
+            stubPokemonDetails(pokemonId, pokemonName, pokemonWeight, pokemonHeight, pokemonBaseExperience);
+        }
 
         wireMockServer.stubFor(
                 get(urlEqualTo("/api/v2/pokemon?limit=100000&offset=0"))
                         .willReturn(
                                 aResponse().withStatus(200)
                                         .withHeader("Content-Type", "application/json")
-                                        .withResponseBody(allPokemonsStubResponseBody)
+                                        .withResponseBody(
+                                                fromJsonBytes(
+                                                        objectMapper.writeValueAsBytes(allPokemonsStubResponseBody)
+                                                )
+                                        )
                         )
         );
 
-        stubPokemonDetails(charmeleonId, CHARMELEON, charmeleonWeight, charmeleonHeight, charmeleonBaseExperience);
-        stubPokemonDetails(bulbasaurId, BULBASAUR, bulbasaurWeight, bulbasaurHeight, bulbasaurBaseExperience);
-
         List<PokemonDTO> result = pokemonsSupplier.get();
 
-        assertThat(result).containsExactlyInAnyOrder(
-                new PokemonDTO(CHARMELEON, charmeleonWeight, charmeleonHeight, charmeleonBaseExperience),
-                new PokemonDTO(BULBASAUR, bulbasaurWeight, bulbasaurHeight, bulbasaurBaseExperience)
-        );
+        assertThat(result).hasSize(pokemonsAmount);
     }
 }
