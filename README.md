@@ -1,7 +1,7 @@
 # 🦆 Pokémon Ranking API 🔝
 
 ![CI/CD status](https://github.com/erickgualpa/pokemon-ranking-api/actions/workflows/main.yml/badge.svg)
-[![](https://img.shields.io/badge/Spring%20Boot%20Version-3.2.4-blue)](/pom.xml)
+[![](https://img.shields.io/badge/Spring%20Boot%20Version-3.3.2-blue)](/pom.xml)
 [![](https://img.shields.io/badge/Java%20Version-21-blue)](/pom.xml)
 
 🧪 Run tests
