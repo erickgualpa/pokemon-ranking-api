@@ -1,8 +1,8 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.webflux;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.webflux;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonDetailsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonsResponse;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -11,7 +11,7 @@ import reactor.core.publisher.Flux;
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>> {
+public final class WebfluxPokemonsSupplier implements Supplier<List<ExternalPokemonDto>> {
 
     private final PokeApiClientProperties pokeApiClientProperties;
     private final WebClient webClient;
@@ -31,7 +31,7 @@ public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>>
     }
 
     @Override
-    public List<PokemonDTO> get() {
+    public List<ExternalPokemonDto> get() {
         GetPokemonsResponse pokemons =
                 webClient
                         .get()
@@ -48,7 +48,7 @@ public final class WebfluxPokemonsSupplier implements Supplier<List<PokemonDTO>>
                                 .uri(pokemon.url())
                                 .retrieve()
                                 .bodyToMono(GetPokemonDetailsResponse.class))
-                .map(r -> new PokemonDTO(r.name(), r.weight(), r.height(), r.baseExperience()))
+                .map(r -> new ExternalPokemonDto(r.name(), r.weight(), r.height(), r.baseExperience()))
                 .collectList()
                 .block();
     }

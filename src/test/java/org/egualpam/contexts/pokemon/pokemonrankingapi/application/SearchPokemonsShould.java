@@ -1,7 +1,6 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.AggregateRepository;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Pokemon;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.SearchPokemonsPort;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.InvalidSortingMethod;
 import org.junit.jupiter.api.BeforeEach;
@@ -10,7 +9,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
-import org.mockito.Captor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -22,40 +20,39 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class FindPokemonsShould {
-
-    private FindPokemons testee;
-
-    @Captor
-    private ArgumentCaptor<PokemonCriteria> criteriaCaptor;
+class SearchPokemonsShould {
 
     @Mock
-    private AggregateRepository<Pokemon> pokemonRepository;
+    private SearchPokemonsPort pokemonRepository;
+
+    private SearchPokemons testSubject;
 
     @BeforeEach
     void setUp() {
-        testee = new FindPokemons(pokemonRepository);
+        testSubject = new SearchPokemons(pokemonRepository);
     }
 
     @ValueSource(strings = {"weight", "height", "base_experience"})
     @ParameterizedTest
-    void findPokemon(String sortBy) {
+    void searchPokemons(String sortBy) {
         String pokemonName = randomAlphabetic(5);
-        when(pokemonRepository.findMatching(criteriaCaptor.capture())).thenReturn(
-                List.of(new Pokemon(pokemonName))
+
+        ArgumentCaptor<PokemonCriteria> criteriaCaptor = ArgumentCaptor.forClass(PokemonCriteria.class);
+        when(pokemonRepository.find(criteriaCaptor.capture())).thenReturn(
+                List.of(new PokemonDto(pokemonName))
         );
 
-        FindPokemonQuery findPokemonQuery = new FindPokemonQuery(sortBy);
-        List<PokemonDTO> result = testee.execute(findPokemonQuery);
+        SearchPokemonsQuery searchPokemonsQuery = new SearchPokemonsQuery(sortBy);
+        List<PokemonDto> result = testSubject.execute(searchPokemonsQuery);
 
-        assertThat(result).containsExactly(new PokemonDTO(pokemonName));
+        assertThat(result).containsExactly(new PokemonDto(pokemonName));
         assertThat(criteriaCaptor.getValue()).usingRecursiveComparison().isEqualTo(new PokemonCriteria(sortBy));
     }
 
     @Test
     void throwDomainException_whenSortingMethodIsInvalid() {
         String invalidSortingMethod = randomAlphabetic(5);
-        FindPokemonQuery findPokemonQuery = new FindPokemonQuery(invalidSortingMethod);
-        assertThrows(InvalidSortingMethod.class, () -> testee.execute(findPokemonQuery));
+        SearchPokemonsQuery searchPokemonsQuery = new SearchPokemonsQuery(invalidSortingMethod);
+        assertThrows(InvalidSortingMethod.class, () -> testSubject.execute(searchPokemonsQuery));
     }
 }

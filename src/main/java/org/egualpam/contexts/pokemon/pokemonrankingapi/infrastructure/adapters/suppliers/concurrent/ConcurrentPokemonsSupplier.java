@@ -1,8 +1,8 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.concurrent;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonDetailsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared.GetPokemonsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonDetailsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonsResponse;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.slf4j.Logger;
 import org.springframework.web.client.RestClient;
@@ -19,7 +19,7 @@ import java.util.function.Supplier;
 
 import static org.slf4j.LoggerFactory.getLogger;
 
-public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDTO>> {
+public final class ConcurrentPokemonsSupplier implements Supplier<List<ExternalPokemonDto>> {
 
     private static final int THREAD_POOL_MAX_SIZE = 50;
     private final Logger logger = getLogger(ConcurrentPokemonsSupplier.class);
@@ -33,7 +33,7 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
     }
 
     @Override
-    public List<PokemonDTO> get() {
+    public List<ExternalPokemonDto> get() {
         List<GetPokemonsResponse.Pokemon> servicePokemons =
                 restClient.get()
                         .uri(pokeApiClientProperties.host() + pokeApiClientProperties.getPokemonsPath())
@@ -42,7 +42,7 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
                         // TODO: Address NPE warning
                         .results();
 
-        List<PokemonDTO> pokemons = Collections.synchronizedList(new ArrayList<>());
+        List<ExternalPokemonDto> pokemons = Collections.synchronizedList(new ArrayList<>());
         ExecutorService executorService = Executors.newFixedThreadPool(THREAD_POOL_MAX_SIZE);
 
         Instant start = Instant.now();
@@ -58,14 +58,14 @@ public final class ConcurrentPokemonsSupplier implements Supplier<List<PokemonDT
         return pokemons;
     }
 
-    private void getPokemonDetails(GetPokemonsResponse.Pokemon p, List<PokemonDTO> pokemonsResult) {
+    private void getPokemonDetails(GetPokemonsResponse.Pokemon p, List<ExternalPokemonDto> pokemonsResult) {
         GetPokemonDetailsResponse pokemonDetails =
                 restClient.get()
                         .uri(p.url())
                         .retrieve()
                         .body(GetPokemonDetailsResponse.class);
         pokemonsResult.add(
-                new PokemonDTO(
+                new ExternalPokemonDto(
                         // TODO: Address NPE warning
                         pokemonDetails.name(),
                         pokemonDetails.weight(),

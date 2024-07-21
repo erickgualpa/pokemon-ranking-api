@@ -1,4 +1,4 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-public record PokemonDTO(String name) {
+public record SearchPokemonsQuery(String sortBy) {
 }

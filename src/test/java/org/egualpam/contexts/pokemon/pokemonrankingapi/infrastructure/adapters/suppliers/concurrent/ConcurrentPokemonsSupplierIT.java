@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.concurrent;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,7 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent.ConcurrentPokemonsSupplier;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
-import static com.github.tomakehurst.wiremock.client.WireMock.get;
-import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
+import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static com.github.tomakehurst.wiremock.common.Strings.randomAlphabetic;
 import static com.github.tomakehurst.wiremock.http.Body.fromJsonBytes;
 import static org.apache.commons.lang3.RandomUtils.nextInt;
@@ -29,7 +28,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
     PokeApiClientProperties pokeApiClientProperties;
     @Autowired
     private ObjectMapper objectMapper;
-    private Supplier<List<PokemonDTO>> pokemonsSupplier;
+    private Supplier<List<ExternalPokemonDto>> pokemonsSupplier;
 
     private static void stubPokemonDetails(
             Integer id,
@@ -97,7 +96,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
                         )
         );
 
-        List<PokemonDTO> result = pokemonsSupplier.get();
+        List<ExternalPokemonDto> result = pokemonsSupplier.get();
 
         assertThat(result).hasSize(pokemonsAmount);
     }

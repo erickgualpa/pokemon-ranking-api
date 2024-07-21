@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import static java.util.Objects.nonNull;
 
-public final class PokemonCriteria implements Criteria {
+public final class PokemonCriteria {
 
     private static final int DEFAULT_LIMIT = 5;
 

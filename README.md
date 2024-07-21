@@ -42,16 +42,15 @@ docker compose down --rmi local
     │   │               └── pokemon
     │   │                   └── pokemonrankingapi
     │   │                       ├── application
+    │   │                       │   └── ports
     │   │                       ├── domain
     │   │                       │   └── exceptions
     │   │                       └── infrastructure
     │   │                           ├── adapters
-    │   │                           │   └── repositories
-    │   │                           │       └── suppliers
-    │   │                           │           └── pokemons
-    │   │                           │               ├── concurrent
-    │   │                           │               ├── shared
-    │   │                           │               └── webflux
+    │   │                           │   └── suppliers
+    │   │                           │       ├── concurrent
+    │   │                           │       ├── shared
+    │   │                           │       └── webflux
     │   │                           └── springboot
     │   │                               ├── configuration
     │   │                               │   └── properties
@@ -69,9 +68,7 @@ docker compose down --rmi local
         │                       ├── e2e
         │                       └── infrastructure
         │                           └── adapters
-        │                               └── repositories
-        │                                   └── suppliers
-        │                                       └── pokemons
-        │                                           └── concurrent
+        │                               └── suppliers
+        │                                   └── concurrent
         └── resources
 ```

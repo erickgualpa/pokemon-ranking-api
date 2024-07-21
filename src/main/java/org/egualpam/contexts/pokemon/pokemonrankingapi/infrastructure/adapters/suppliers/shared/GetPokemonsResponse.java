@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.repositories.suppliers.pokemons.shared;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared;
 
 import java.util.List;
 

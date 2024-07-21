@@ -1,8 +1,8 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.controllers;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.FindPokemonQuery;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.FindPokemons;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDTO;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.SearchPokemons;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.SearchPokemonsQuery;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -19,17 +19,17 @@ public final class PokemonRankingController {
 
     private static final Logger logger = LoggerFactory.getLogger(PokemonRankingController.class);
 
-    private final FindPokemons findPokemons;
+    private final SearchPokemons searchPokemons;
 
-    public PokemonRankingController(FindPokemons findPokemons) {
-        this.findPokemons = findPokemons;
+    public PokemonRankingController(SearchPokemons searchPokemons) {
+        this.searchPokemons = searchPokemons;
     }
 
     @GetMapping("/heaviest")
     public ResponseEntity<GetPokemonRankingResponse> getHeaviestPokemons() {
-        List<PokemonDTO> pokemons;
+        List<PokemonDto> pokemons;
         try {
-            pokemons = new ArrayList<>(findPokemons.execute(new FindPokemonQuery("weight")));
+            pokemons = new ArrayList<>(searchPokemons.execute(new SearchPokemonsQuery("weight")));
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
@@ -39,9 +39,9 @@ public final class PokemonRankingController {
 
     @GetMapping("/highest")
     public ResponseEntity<GetPokemonRankingResponse> getHighestPokemons() {
-        List<PokemonDTO> pokemons;
+        List<PokemonDto> pokemons;
         try {
-            pokemons = new ArrayList<>(findPokemons.execute(new FindPokemonQuery("height")));
+            pokemons = new ArrayList<>(searchPokemons.execute(new SearchPokemonsQuery("height")));
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
@@ -51,9 +51,9 @@ public final class PokemonRankingController {
 
     @GetMapping("/most-experienced")
     public ResponseEntity<GetPokemonRankingResponse> getMostExperiencedPokemons() {
-        List<PokemonDTO> pokemons;
+        List<PokemonDto> pokemons;
         try {
-            pokemons = new ArrayList<>(findPokemons.execute(new FindPokemonQuery("base_experience")));
+            pokemons = new ArrayList<>(searchPokemons.execute(new SearchPokemonsQuery("base_experience")));
         } catch (Exception e) {
             logger.error("Unexpected error retrieving ranking", e);
             return ResponseEntity.internalServerError().build();
