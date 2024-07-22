@@ -1,12 +1,12 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Limit;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
 
 import java.util.List;
 import java.util.function.Supplier;

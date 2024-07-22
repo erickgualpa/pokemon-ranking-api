@@ -5,7 +5,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(
         scanBasePackages = {
-                "org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot"
+                "org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration",
+                "org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.in.rest"
         }
 )
 public class PokemonRankingApiApplication {

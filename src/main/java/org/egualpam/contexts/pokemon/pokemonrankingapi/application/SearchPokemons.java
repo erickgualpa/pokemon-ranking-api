@@ -1,6 +1,6 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 
 import java.util.List;

@@ -1,9 +1,9 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.webflux;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.webflux;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonDetailsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.shared.GetPokemonDetailsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.shared.GetPokemonsResponse;
 import org.springframework.web.reactive.function.client.ExchangeStrategies;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Flux;

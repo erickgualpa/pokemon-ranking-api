@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -6,9 +6,8 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent.ConcurrentPokemonsSupplier;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.shared;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

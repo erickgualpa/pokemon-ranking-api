@@ -1,13 +1,13 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration;
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.SearchPokemonsPort;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.SearchPokemonsFacadeAdapter;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent.ConcurrentPokemonsSupplier;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.webflux.WebfluxPokemonsSupplier;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.SearchPokemonsFacadeAdapter;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent.ConcurrentPokemonsSupplier;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.webflux.WebfluxPokemonsSupplier;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

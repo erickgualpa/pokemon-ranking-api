@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

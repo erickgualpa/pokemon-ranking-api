@@ -32,7 +32,6 @@ docker compose down --rmi local
 
 ```
 .
-├── etc
 └── src
     ├── main
     │   ├── java
@@ -43,19 +42,22 @@ docker compose down --rmi local
     │   │                   └── pokemonrankingapi
     │   │                       ├── application
     │   │                       │   └── ports
+    │   │                       │       └── out
     │   │                       ├── domain
     │   │                       │   └── exceptions
     │   │                       └── infrastructure
-    │   │                           ├── adapters
-    │   │                           │   └── suppliers
-    │   │                           │       ├── concurrent
-    │   │                           │       ├── shared
-    │   │                           │       └── webflux
-    │   │                           └── springboot
+    │   │                           └── adapters
     │   │                               ├── configuration
     │   │                               │   └── properties
     │   │                               │       └── clients
-    │   │                               └── controllers
+    │   │                               ├── in
+    │   │                               │   └── rest
+    │   │                               └── out
+    │   │                                   └── searchpokemons
+    │   │                                       └── suppliers
+    │   │                                           ├── concurrent
+    │   │                                           ├── shared
+    │   │                                           └── webflux
     │   └── resources
     └── test
         ├── java
@@ -68,7 +70,11 @@ docker compose down --rmi local
         │                       ├── e2e
         │                       └── infrastructure
         │                           └── adapters
+        │                               ├── out
+        │                               │   ├── searchpokemons
+        │                               │   │   └── suppliers
+        │                               │   │       └── concurrent
+        │                               │   └── suppliers
         │                               └── suppliers
-        │                                   └── concurrent
         └── resources
 ```

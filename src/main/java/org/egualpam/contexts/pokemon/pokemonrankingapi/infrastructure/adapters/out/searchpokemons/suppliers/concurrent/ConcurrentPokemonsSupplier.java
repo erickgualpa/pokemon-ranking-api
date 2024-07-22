@@ -1,9 +1,9 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.concurrent;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.ExternalPokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonDetailsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.suppliers.shared.GetPokemonsResponse;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.springboot.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.shared.GetPokemonDetailsResponse;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.shared.GetPokemonsResponse;
 import org.slf4j.Logger;
 import org.springframework.web.client.RestClient;
 
