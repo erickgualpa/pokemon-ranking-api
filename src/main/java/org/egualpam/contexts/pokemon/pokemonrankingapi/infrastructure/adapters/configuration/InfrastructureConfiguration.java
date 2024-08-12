@@ -2,9 +2,9 @@ package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.
 
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.SearchPokemonsFacadeAdapter;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.PokemonSearchRepositorySimpleAdapter;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent.ConcurrentPokemonsSupplier;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.webflux.WebfluxPokemonsSupplier;
@@ -41,7 +41,7 @@ public class InfrastructureConfiguration {
     }
 
     @Bean
-    public SearchPokemonsPort searchPokemonsPort(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
-        return new SearchPokemonsFacadeAdapter(pokemonsSupplier);
+    public PokemonSearchRepository pokemonSearchRepositorySimpleAdapter(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
+        return new PokemonSearchRepositorySimpleAdapter(pokemonsSupplier);
     }
 }

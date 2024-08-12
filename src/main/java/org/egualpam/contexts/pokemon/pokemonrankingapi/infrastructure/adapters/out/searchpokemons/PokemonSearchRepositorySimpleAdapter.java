@@ -1,7 +1,7 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Limit;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
@@ -11,11 +11,11 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.o
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class SearchPokemonsFacadeAdapter implements SearchPokemonsPort {
+public final class PokemonSearchRepositorySimpleAdapter implements PokemonSearchRepository {
 
     private final Supplier<List<ExternalPokemonDto>> pokemonsSupplier;
 
-    public SearchPokemonsFacadeAdapter(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
+    public PokemonSearchRepositorySimpleAdapter(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
         this.pokemonsSupplier = pokemonsSupplier;
     }
 

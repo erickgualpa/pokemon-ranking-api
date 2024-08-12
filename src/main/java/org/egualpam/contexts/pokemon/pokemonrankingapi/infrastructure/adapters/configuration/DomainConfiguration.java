@@ -1,7 +1,7 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.SearchPokemons;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -9,8 +9,8 @@ import org.springframework.context.annotation.Configuration;
 public class DomainConfiguration {
     @Bean
     public SearchPokemons searchPokemons(
-            SearchPokemonsPort searchPokemonsPort
+            PokemonSearchRepository pokemonSearchRepository
     ) {
-        return new SearchPokemons(searchPokemonsPort);
+        return new SearchPokemons(pokemonSearchRepository);
     }
 }

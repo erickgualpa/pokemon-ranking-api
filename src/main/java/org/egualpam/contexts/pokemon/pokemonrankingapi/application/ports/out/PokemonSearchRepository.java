@@ -5,6 +5,6 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 
 import java.util.List;
 
-public interface SearchPokemonsPort {
+public interface PokemonSearchRepository {
     List<PokemonDto> find(PokemonCriteria pokemonCriteria);
 }

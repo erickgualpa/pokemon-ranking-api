@@ -1,20 +1,20 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 
 import java.util.List;
 
 public final class SearchPokemons {
 
-    private final SearchPokemonsPort searchPokemonsPort;
+    private final PokemonSearchRepository pokemonSearchRepository;
 
-    public SearchPokemons(SearchPokemonsPort searchPokemonsPort) {
-        this.searchPokemonsPort = searchPokemonsPort;
+    public SearchPokemons(PokemonSearchRepository pokemonSearchRepository) {
+        this.pokemonSearchRepository = pokemonSearchRepository;
     }
 
     public List<PokemonDto> execute(SearchPokemonsQuery query) {
         PokemonCriteria criteria = new PokemonCriteria(query.sortBy());
-        return searchPokemonsPort.find(criteria);
+        return pokemonSearchRepository.find(criteria);
     }
 }

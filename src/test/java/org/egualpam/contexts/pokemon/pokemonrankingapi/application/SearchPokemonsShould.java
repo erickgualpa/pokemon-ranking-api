@@ -1,6 +1,6 @@
 package org.egualpam.contexts.pokemon.pokemonrankingapi.application;
 
-import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.SearchPokemonsPort;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.InvalidSortingMethod;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,13 +23,13 @@ import static org.mockito.Mockito.when;
 class SearchPokemonsShould {
 
     @Mock
-    private SearchPokemonsPort pokemonRepository;
+    private PokemonSearchRepository pokemonSearchRepository;
 
     private SearchPokemons testSubject;
 
     @BeforeEach
     void setUp() {
-        testSubject = new SearchPokemons(pokemonRepository);
+        testSubject = new SearchPokemons(pokemonSearchRepository);
     }
 
     @ValueSource(strings = {"weight", "height", "base_experience"})
@@ -38,7 +38,7 @@ class SearchPokemonsShould {
         String pokemonName = randomAlphabetic(5);
 
         ArgumentCaptor<PokemonCriteria> criteriaCaptor = ArgumentCaptor.forClass(PokemonCriteria.class);
-        when(pokemonRepository.find(criteriaCaptor.capture())).thenReturn(
+        when(pokemonSearchRepository.find(criteriaCaptor.capture())).thenReturn(
                 List.of(new PokemonDto(pokemonName))
         );
 
