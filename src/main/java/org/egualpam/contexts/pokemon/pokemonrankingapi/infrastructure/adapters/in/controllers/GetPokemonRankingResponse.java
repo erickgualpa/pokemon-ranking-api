@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.in.rest;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.in.controllers;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDto;
 
