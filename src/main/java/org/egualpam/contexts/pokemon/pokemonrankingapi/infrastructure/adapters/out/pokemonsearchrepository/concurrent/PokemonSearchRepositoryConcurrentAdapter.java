@@ -9,8 +9,12 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.Require
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.pokemonsearchrepository.shared.ExternalPokemonDto;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.pokemonsearchrepository.shared.ExternalPokemonDto.*;
 
 public final class PokemonSearchRepositoryConcurrentAdapter implements PokemonSearchRepository {
 
@@ -24,37 +28,26 @@ public final class PokemonSearchRepositoryConcurrentAdapter implements PokemonSe
     public List<PokemonDto> find(PokemonCriteria pokemonCriteria) {
         SortBy sortBy = pokemonCriteria.getType().orElseThrow(RequiredPropertyIsMissing::new);
         Limit limit = pokemonCriteria.getLimit().orElseThrow(RequiredPropertyIsMissing::new);
-        return switch (sortBy) {
-            case HEIGHT -> findSortedByHeight(limit);
-            case WEIGHT -> findSortedByWeight(limit);
-            case BASE_EXPERIENCE -> findSortedByBaseExperience(limit);
+
+        List<ExternalPokemonDto> externalPokemons = switch (sortBy) {
+            case HEIGHT -> sortedPokemons(hasHeightInformed, heightComparator);
+            case WEIGHT -> sortedPokemons(hasWeightInformed, weightComparator);
+            case BASE_EXPERIENCE -> sortedPokemons(hasBaseExperienceInformed, baseExperienceComparator);
         };
-    }
 
-    private List<PokemonDto> findSortedByHeight(Limit limit) {
-        return pokemonsSupplier.get().stream()
-                .filter(p -> p.height() != null)
-                .sorted((p1, p2) -> p2.height().compareTo(p1.height()))
+        return externalPokemons.stream()
                 .limit(limit.value())
                 .map(p -> new PokemonDto(p.name()))
                 .toList();
     }
 
-    private List<PokemonDto> findSortedByWeight(Limit limit) {
+    private List<ExternalPokemonDto> sortedPokemons(
+            Predicate<ExternalPokemonDto> pokemonValidation,
+            Comparator<ExternalPokemonDto> pokemonComparator
+    ) {
         return pokemonsSupplier.get().stream()
-                .filter(p -> p.weight() != null)
-                .sorted((p1, p2) -> p2.weight().compareTo(p1.weight()))
-                .limit(limit.value())
-                .map(p -> new PokemonDto(p.name()))
-                .toList();
-    }
-
-    private List<PokemonDto> findSortedByBaseExperience(Limit limit) {
-        return pokemonsSupplier.get().stream()
-                .filter(p -> p.baseExperience() != null)
-                .sorted((p1, p2) -> p2.baseExperience().compareTo(p1.baseExperience()))
-                .limit(limit.value())
-                .map(p -> new PokemonDto(p.name()))
+                .filter(pokemonValidation)
+                .sorted(pokemonComparator)
                 .toList();
     }
 }
