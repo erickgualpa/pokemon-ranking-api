@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.concurrent;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.github.tomakehurst.wiremock.http.Body;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.AbstractIntegrationTest;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.shared.ExternalPokemonDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +25,11 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
     @Autowired
     PokeApiClientProperties pokeApiClientProperties;
+
     @Autowired
     private ObjectMapper objectMapper;
-    private Supplier<List<ExternalPokemonDto>> pokemonsSupplier;
+
+    private Supplier<List<ExternalPokemonDto>> testSubject;
 
     private static void stubPokemonDetails(
             Integer id,
@@ -58,7 +60,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
 
     @BeforeEach
     void setUp() {
-        pokemonsSupplier = new ConcurrentPokemonsSupplier(pokeApiClientProperties);
+        testSubject = new ConcurrentPokemonsSupplier(pokeApiClientProperties);
     }
 
     @Test
@@ -95,7 +97,7 @@ class ConcurrentPokemonsSupplierIT extends AbstractIntegrationTest {
                         )
         );
 
-        List<ExternalPokemonDto> result = pokemonsSupplier.get();
+        List<ExternalPokemonDto> result = testSubject.get();
 
         assertThat(result).hasSize(pokemonsAmount);
     }

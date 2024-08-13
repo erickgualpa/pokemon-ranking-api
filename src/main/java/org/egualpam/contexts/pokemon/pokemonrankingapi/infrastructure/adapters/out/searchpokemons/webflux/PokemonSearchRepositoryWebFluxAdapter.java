@@ -1,4 +1,4 @@
-package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons;
+package org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.webflux;
 
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.PokemonDto;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
@@ -6,17 +6,18 @@ import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.Limit;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.PokemonCriteria;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.SortBy;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.domain.exceptions.RequiredPropertyIsMissing;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.shared.ExternalPokemonDto;
 
 import java.util.List;
 import java.util.function.Supplier;
 
-public final class PokemonSearchRepositorySimpleAdapter implements PokemonSearchRepository {
+public final class PokemonSearchRepositoryWebFluxAdapter implements PokemonSearchRepository {
 
     private final Supplier<List<ExternalPokemonDto>> pokemonsSupplier;
 
-    public PokemonSearchRepositorySimpleAdapter(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
-        this.pokemonsSupplier = pokemonsSupplier;
+    public PokemonSearchRepositoryWebFluxAdapter(PokeApiClientProperties pokeApiClientProperties) {
+        this.pokemonsSupplier = new WebfluxPokemonsSupplier(pokeApiClientProperties);
     }
 
     @Override

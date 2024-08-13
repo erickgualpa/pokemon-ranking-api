@@ -4,17 +4,12 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.application.ports.out.PokemonSearchRepository;
 import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.configuration.properties.clients.PokeApiClientProperties;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.PokemonSearchRepositorySimpleAdapter;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.ExternalPokemonDto;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.concurrent.ConcurrentPokemonsSupplier;
-import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.suppliers.webflux.WebfluxPokemonsSupplier;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.concurrent.PokemonSearchRepositoryConcurrentAdapter;
+import org.egualpam.contexts.pokemon.pokemonrankingapi.infrastructure.adapters.out.searchpokemons.webflux.PokemonSearchRepositoryWebFluxAdapter;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-
-import java.util.List;
-import java.util.function.Supplier;
 
 @EnableConfigurationProperties(PokeApiClientProperties.class)
 @Configuration
@@ -27,21 +22,18 @@ public class InfrastructureConfiguration {
                 );
     }
 
-    @Bean
-    public Supplier<List<ExternalPokemonDto>> concurrentPokemonsSupplier(
-            PokeApiClientProperties pokeApiClientProperties
-    ) {
-        return new ConcurrentPokemonsSupplier(pokeApiClientProperties);
-    }
-
     @Primary
     @Bean
-    public Supplier<List<ExternalPokemonDto>> webfluxPokemonsSupplier(PokeApiClientProperties pokeApiClientProperties) {
-        return new WebfluxPokemonsSupplier(pokeApiClientProperties);
+    public PokemonSearchRepository pokemonSearchRepositoryWebFluxAdapter(
+            PokeApiClientProperties pokeApiClientProperties
+    ) {
+        return new PokemonSearchRepositoryWebFluxAdapter(pokeApiClientProperties);
     }
 
     @Bean
-    public PokemonSearchRepository pokemonSearchRepositorySimpleAdapter(Supplier<List<ExternalPokemonDto>> pokemonsSupplier) {
-        return new PokemonSearchRepositorySimpleAdapter(pokemonsSupplier);
+    public PokemonSearchRepository pokemonSearchRepositoryConcurrentAdapter(
+            PokeApiClientProperties pokeApiClientProperties
+    ) {
+        return new PokemonSearchRepositoryConcurrentAdapter(pokeApiClientProperties);
     }
 }
