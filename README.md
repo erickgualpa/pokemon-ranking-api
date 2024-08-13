@@ -51,13 +51,12 @@ docker compose down --rmi local
     │   │                               │   └── properties
     │   │                               │       └── clients
     │   │                               ├── in
-    │   │                               │   └── rest
+    │   │                               │   └── controllers
     │   │                               └── out
-    │   │                                   └── searchpokemons
-    │   │                                       └── suppliers
-    │   │                                           ├── concurrent
-    │   │                                           ├── shared
-    │   │                                           └── webflux
+    │   │                                   └── pokemonsearchrepository
+    │   │                                       ├── concurrent
+    │   │                                       ├── shared
+    │   │                                       └── webflux
     │   └── resources
     └── test
         ├── java
@@ -70,11 +69,8 @@ docker compose down --rmi local
         │                       ├── e2e
         │                       └── infrastructure
         │                           └── adapters
-        │                               ├── out
-        │                               │   ├── searchpokemons
-        │                               │   │   └── suppliers
-        │                               │   │       └── concurrent
-        │                               │   └── suppliers
-        │                               └── suppliers
+        │                               └── out
+        │                                   └── pokemonsearchrepository
+        │                                       └── concurrent
         └── resources
 ```
